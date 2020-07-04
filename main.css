@@ -1,0 +1,131 @@
+body
+{
+	background-color: #373a3d;
+}
+
+.navbar
+{
+	background-color: #b72;/*#91a33b;*/
+}
+
+.www
+{
+	 border: solid;
+	 padding-left: 7px;
+	 letter-spacing: 10px;
+	 margin-left: -3px;
+	 font-weight: bold;
+}
+
+.rozwin
+{
+	display: none;
+	background-color: #555;
+	margin: 10px;
+	border: 5px solid #373a3d;
+}
+
+.list-group-item-dark
+{
+	color: white !important;
+	background-color: #a9621d;
+	padding: 6px;
+}
+
+.list-group-item-dark:hover
+{
+	background-color: #84923A !important;
+}
+
+.active
+{
+	background-color: #68732F !important;
+	cursor: default;
+}
+
+.active:hover {background-color: #68732F !important;}
+
+aside
+{
+	background-color: #6c757d;
+}
+
+.formularz
+{
+	display: inline-block;
+	width: 200px;
+}
+
+.error
+{
+	border: 2px solid red;
+	border-radius: 20px;
+	padding: 6px;
+}
+
+@media (min-width: 576px)
+{
+	h2
+	{
+		letter-spacing: 10px;
+	}
+	aside
+	{
+		min-width: 188px;
+		background-color: transparent;
+	}
+	.dropdown
+	{
+		width: auto !important;
+	}
+	
+}
+
+/* header subnav */
+.subnav
+{
+	background-color: #89520d;
+	overflow: visible;
+	width: 125px;
+}
+
+.dropdown
+{
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content
+{
+  display: none;
+  position: absolute;
+  z-index: 3;
+}
+
+.dropdown-content a
+{
+  display: block;
+}
+
+.dropdown:hover .dropdown-content, .dropdown-content a {display: block;}
+
+.dropdown:hover .dropbtn {background-color: #84923A;}
+
+/* klasy.php */
+table#tabelaKlas
+{
+	margin: 0 auto;
+}
+#tabelaKlas th, #tabelaKlas td 
+{
+	border: 1px solid white;
+	padding: 10px;
+}
+
+
+
+
+
+
+
+
