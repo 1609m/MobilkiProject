@@ -34,7 +34,7 @@
 							exit();
 						}
 					?>
-					<h3>Witamy na stronie<?php
+					<h3>Witojcie na stronie<?php
 						if(isset($_SESSION['zalogowany']))
 						{
 							$dane = explode(',', $_SESSION['zalogowany'], 3);
