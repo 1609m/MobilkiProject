@@ -13,6 +13,7 @@
 <html lang="pl">
 <head>
 
+
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	
@@ -48,19 +49,35 @@
 	{
 		$klasa = $_POST['nowaKlasa'];
 		$result = $conn->query("SELECT * FROM klasy");
-		$juzIstnieje = false;
+		$dodKlasy = true;
+		$error = "";
+
 		while($row = $result->fetch_row())
 		{
-			if($row[1] == $klasa)
-				$juzIstnieje = true;
+			if ($row[1] == $klasa) {
+				$dodKlasy = false;
+				$error = "Klasa o nazwie ".$klasa." już istnieje!";
+			}
+				
 		}
-		if($juzIstnieje == true)
-			echo "<div class='error'>Klasa o nazwie ".$klasa." już istnieje!</div><br>";
-		else
-		{
+
+		if (ctype_alnum($klasa) == false) {
+			$dodKlasy = false;
+			$error = "Nazwa klasy musi składać się ze znaków alfanumerycznych!";
+		}
+		
+		if (strlen($klasa) < 2) {
+			$dodKlasy = false;
+			$error = "Nazwa klasy musi składać się przynajmniej z 2 znaków";
+		}
+
+		if ($dodKlasy == true) {
 			$conn->query("INSERT INTO klasy VALUES(NULL, '$klasa')");
 			echo "<h3 class='text-success font-weight-bold'>Klasa ".$klasa." została dodana pomyślnie!</h3><br>";
+		} else {
+			echo "<div class='error'>$error</div><br>";
 		}
+			
 	}
 	
 ?>
