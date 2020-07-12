@@ -56,7 +56,8 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-
+	
+	
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	
@@ -68,8 +69,8 @@
 	
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="main.css">
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
-
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700&amp;subset=latin-ext" rel="stylesheet">
+	
 	<script type="text/javascript">
 		
 		function rozwin(id)
@@ -97,91 +98,46 @@
 		setTimeout(start,50);
 		
 	</script>
-	
+		
 </head>
 
 <body>
+
 	
-	<?php $active = "powiadomienia"; require "header.php";	?>
+	<?php $active = "z_angU"; require "header.php";	?>
 	<main>
 		<div class="container-fluid">
 			<div class="row">
 				
-				<div class="col-sm-8 col-lg-7 my-3 mx-auto bg-secondary text-center text-light">
-					<h3>Powiadomienia</h3>
+				<div class="col-sm-8 my-3 mx-auto bg-secondary text-center text-light">
+					
+					<h2>JĘZYK ANGIELSKI</h2><br>
+					
+					<h3>1. Uzupełnij lukę</h3>
+					<button onclick="rozwin('o1')" class="dropdown-toggle w-75 btn-secondary">Otwórz</button><br>
+					<div id="o1" class="rozwin">
+					<br>
 <?php
-	if(isset($_POST['klucz']) && !isset($_SESSION['er_dodaj1']))
+	require_once "dbconnect.php";
+	$conn = new mysqli($host, $user, $pass, $db);
+	
+	$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 1");
+	$i = 0;
+	while($row = $result->fetch_assoc())
 	{
-		echo "<h3 class='text-success font-weight-bold'>Zadanie zostało dodane pomyślnie!</h3><br>";
+		$zdanie = explode("#", $row['tresc'],2);
+		$uzupelnij = $row['klucz'];
+		$i++;
+		echo "<b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' value=''>".$zdanie[1]."<br><a href='#' class='text-warning'>Sprawdź odpowiedź!</a><br><br>";
+		
 	}
-?>					
-						
+	$conn->close();
+?>	
 				
-					<button onclick="rozwin('d1')" class="dropdown-toggle w-75 btn-secondary">Dodaj nowe powiadomienie</button><br>
-					<div id="d1" class="rozwin">
-						<br>
-						<form action="powiadomienia.php" method="post">
-							
-							<label>Wybierz klasę
-							<select name="klasa">
-							
-<?php
-	require_once "dbconnect.php";		
-	$conn =  new mysqli($host, $user, $pass, $db);
-	$result = $conn->query("SELECT * FROM klasy");
-	while($row = $result->fetch_row())
-	{
-		echo "<option value='$row[0]'>$row[1]</option>";
-	}
-	$conn->close();	
-?>
-							</select>
-							</label>
-						<br>
-							
-							<label>Wybierz przedmiot
-							<select name="przedmiot">
-							
-<?php
-	require_once "dbconnect.php";		
-	$conn =  new mysqli($host, $user, $pass, $db);	
-	$dane = explode(",", $_SESSION['zalogowany']);
-	$result = $conn->query("SELECT * FROM nauczyciele WHERE id = '$dane[1]'");
-	$row = $result->fetch_assoc();
-	$id = $row['id'];
-	$result = $conn->query("SELECT przedmioty.id, nazwa FROM przedmioty, zajecia WHERE przedmioty.id = zajecia.przedmiot_id AND nauczyciel_id = '$id'");
-	while($row = $result->fetch_row())
-	{
-		echo "<option value='$row[0]'>$row[1]</option>";
-		
-	}
-	$conn->close();	
-		
-?>
-							</select>
-							</label>
-							<br>
-							Napisz wiadomość<br>
-							<textarea name="tekst" rows="6" cols="80"></textarea><br>
-							<input type="submit" value="Wyślij">
-						</form>
-						<br>
-<?php
-	if(isset($_SESSION['er_dodaj1']))
-	{
-		echo "<div class='error'>".$_SESSION['er_dodaj1']."</div><br>";
-		unset($_SESSION['er_dodaj1']);
-	}
-?>
-						
-						
-					</div>
-					
-					
-					<br><br>
-					
 				</div>
+				<br><br>
 				
+				</div>
 				
 			</div>
 		</div>

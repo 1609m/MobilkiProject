@@ -44,7 +44,7 @@
 						<!--  ZADANIA  -->
 						<li class="m-1 list-inline-item"><div class="dropdown w-100">
 							
-							<a href="#" class="dropbtn dropdown-toggle list-group-item list-group-item-dark list-group-item-action z_zadane z_doZrobienia z_mat z_ang">ZADANIA</a>
+							<a href="#" class="dropbtn dropdown-toggle list-group-item list-group-item-dark list-group-item-action z_zadane z_doZrobienia z_mat z_ang z_angU">ZADANIA</a>
 							
 							<div class="dropdown-content">
 								
@@ -57,6 +57,8 @@
 								<a href="zadanieMat.php" class="subnav list-group-item list-group-item-dark list-group-item-action z_mat">MATEMETYKA</a>
 								
 								<a href="zadanieAng.php" class="subnav list-group-item list-group-item-dark list-group-item-action z_ang">J. ANGIELSKI</a>
+
+								<a href="zadanieAngU.php" class="subnav list-group-item list-group-item-dark list-group-item-action z_angU">J. ANGIELSKI</a>
 								
 							 </div>
 							 
@@ -71,6 +73,7 @@
 						
 						<!--  POWIADOMIENIA  -->
 						<li class="m-1 list-inline-item"><a href="powiadomienia.php" class="list-group-item list-group-item-dark list-group-item-action powiadomienia">POWIADOMIENIA</a></li>
+						<li class="m-1 list-inline-item"><a href="powiadomieniaU.php" class="list-group-item list-group-item-dark list-group-item-action powiadomieniaU">POWIADOMIENIA</a></li>
 						
 						<!--  MOJE KONTO  -->
 						<li class="m-1 list-inline-item"><a href="mojeKonto.php" class="list-group-item list-group-item-dark list-group-item-action mojeKonto">MOJE KONTO</a></li>
@@ -98,11 +101,17 @@
 		{
 			$('.klasy').addClass('d-none');
 			$('.z_zadane').addClass('d-none');
+			$('.z_ang').addClass('d-none');
+			$('.powiadomienia').addClass('d-none');
+
+			
 		}
 		else if(naucz == "n")
 		{
 			$('.przedmioty').addClass('d-none');
 			$('.z_doZrobienia').addClass('d-none');
+			$('.z_angU').addClass('d-none');
+			$('.powiadomieniaU').addClass('d-none');
 		}
 		else
 		{
@@ -110,8 +119,13 @@
 			$('.logowanie').removeClass('d-none');
 		}
 		// przywraca przycisk zadania, po usunieciu go przez zadane / doZrobienia
-		if($('.z_ang').hasClass('d-none') )
+		if ($('.z_ang').hasClass('d-none') && naucz == "n" ) { 
 			$('.z_ang').removeClass('d-none');
+		} else if ($('.z_angU').hasClass('d-none') && naucz == "u") {
+			$('.z_angU').removeClass('d-none');
+		}
+			
+
 		
 		$('.' + '<?php echo $active; ?>').addClass('active');
 		
