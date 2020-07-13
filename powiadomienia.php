@@ -7,49 +7,29 @@
 	}
 	
 	$anchor = "";
-	if(isset($_POST['klucz']))
+	if(isset($_POST['wiadomosc']))
 	{
-		$zdanie = $_POST['zdanie'];
-		$klucz = $_POST['klucz'];
+		$klasa = $_POST['klasa'];
+		$przedmiot = $_POST['przedmiot'];
+		$wiadomosc = $_POST['wiadomosc'];
 		
-		if(strpos($zdanie, "#") !== false)
-		{
-			if($klucz != "")
+		
+			if($wiadomosc != "")
 			{
 				require_once "dbconnect.php";
 				$conn = new mysqli($host, $user, $pass, $db);
+				$dane = explode(",", $_SESSION['zalogowany']);
+
 				
-				$result = $conn->query("SELECT tresc, klucz FROM zadania WHERE przedmiot_id = 12 AND typ = 1");
-				$juzJest = false;
-				while($row = $result->fetch_assoc())
-				{
-					if($row['tresc'] == $zdanie && $row['klucz'] == $klucz)
-						$juzJest = true;
-				}
-				
-				if($juzJest == false)
-				{
-					$conn->query("INSERT INTO zadania VALUES(NULL,12,1,'$zdanie','$klucz','')");
-				}
-				else
-				{
-					$_SESSION['er_dodaj1'] = "Takie  zadanie już istnieje.";
-					$anchor = "er1";
-				}
-				
+
+				$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','$klasa','$przedmiot','$wiadomosc')");
 				$conn->close();
 			}
 			else
 			{
-				$_SESSION['er_dodaj1'] = "Wypełnij oba pola";
+				$_SESSION['er_wiadomosc'] = "Wypełnij pole wiadomości";
 				$anchor = "er1";
 			}
-		}
-		else
-		{
-			$_SESSION['er_dodaj1'] = "W zdaniu musi pojawić się znak #";
-			$anchor = "er1";
-		}
 	}
 	
 ?>
@@ -110,9 +90,9 @@
 				<div class="col-sm-8 col-lg-7 my-3 mx-auto bg-secondary text-center text-light">
 					<h3>Powiadomienia</h3>
 <?php
-	if(isset($_POST['klucz']) && !isset($_SESSION['er_dodaj1']))
+	if(isset($_POST['wiadomosc']) && !isset($_SESSION['er_wiadomosc']))
 	{
-		echo "<h3 class='text-success font-weight-bold'>Zadanie zostało dodane pomyślnie!</h3><br>";
+		echo "<h3 class='text-success font-weight-bold'>Wiadomość została wysłana!</h3><br>";
 	}
 ?>					
 						
@@ -162,15 +142,15 @@
 							</label>
 							<br>
 							Napisz wiadomość<br>
-							<textarea name="tekst" rows="6" cols="80"></textarea><br>
+							<textarea name="wiadomosc" rows="6" cols="80"></textarea><br>
 							<input type="submit" value="Wyślij">
 						</form>
 						<br>
 <?php
-	if(isset($_SESSION['er_dodaj1']))
+	if(isset($_SESSION['er_wiadomosc']))
 	{
-		echo "<div class='error'>".$_SESSION['er_dodaj1']."</div><br>";
-		unset($_SESSION['er_dodaj1']);
+		echo "<div class='error'>".$_SESSION['er_wiadomosc']."</div><br>";
+		unset($_SESSION['er_wiadomosc']);
 	}
 ?>
 						
