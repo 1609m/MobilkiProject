@@ -1,3 +1,11 @@
+<?php
+	session_start();
+	if(!isset($_SESSION['zalogowany']))
+	{
+		header('Location: logowanie.php');
+		exit();
+	}
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -20,13 +28,48 @@
 
 <body>
 	
-	<?php $active = "powiadomienia"; require "header.php";	?>
+	<?php $active = "powiadomieniaU"; require "header.php";	?>
 	<main>
 		<div class="container-fluid">
 			<div class="row">
 				
 				<div class="col-sm-8 col-lg-7 my-3 mx-auto bg-secondary text-center text-light">
 					<h3>Powiadomienia</h3>
+					<br>
+					
+					
+					
+					
+<?php
+	require_once "dbconnect.php";
+	$conn = new mysqli($host, $user, $pass, $db);
+	$dane = explode(",", $_SESSION['zalogowany']);
+	$result = $conn->query("SELECT * FROM uczniowie WHERE uczniowie.id = '$dane[1]'");
+	$i = 0;
+	while($row = $result->fetch_assoc())
+	{
+		$klasaId = $row['klasa_id'];
+		$resultPowiadomienia = $conn->query("SELECT * FROM powiadomienia WHERE '$klasaId' = klasa_id");
+		while ($rowPowiadomienia = $resultPowiadomienia->fetch_assoc()) {
+
+			$nauczycielId = $rowPowiadomienia['nauczyciel_id'];
+			$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielId' = nauczyciele.id");
+			$rowNauczyciel = $resultNauczyciel->fetch_assoc();
+
+			$przedmiotId = $rowPowiadomienia['przedmiot_id'];
+			$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = przedmioty.id");
+			$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+
+			if ($i>0) {
+				echo "<hr style='height: 5px; background: black; border: 0px;'>";
+			}
+			echo "Prowadzący: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
+			$i++;
+		}	
+	}
+	$conn->close();
+?>
+					
 					
 				</div>
 				

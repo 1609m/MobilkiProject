@@ -156,9 +156,41 @@
 						
 						
 					</div>
+					<br>
+
+					<h3>Twoje powiadomienia</h3>
+					<button onclick="rozwin('o1')" class="dropdown-toggle w-75 btn-secondary">Otwórz</button><br>
+					<div id="o1" class="rozwin">
+					<br>
+<?php
+	require_once "dbconnect.php";
+	$conn = new mysqli($host, $user, $pass, $db);
+	$dane = explode(",", $_SESSION['zalogowany']);
+	$result = $conn->query("SELECT * FROM powiadomienia WHERE nauczyciel_id = '$dane[1]'");
+	$i = 0;
+	while($row = $result->fetch_assoc())
+	{
+		$klasaId = $row['klasa_id'];
+		$resultKlasa = $conn->query("SELECT * FROM klasy WHERE '$klasaId' = klasy.id");
+		$rowKlasa = $resultKlasa->fetch_assoc();
+
+		$przedmiotId = $row['przedmiot_id'];
+		$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = przedmioty.id");
+		$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+		
+		if ($i>0) {
+			echo "<hr style='height: 5px; background: black; border: 0px;'>";
+		}
+		echo "Klasa: ".$rowKlasa['nazwa']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
+		$i++;
+	}
+	$conn->close();
+?>
+						
 					
+					</div>
+					<br>
 					
-					<br><br>
 					
 				</div>
 				
