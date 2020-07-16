@@ -20,9 +20,25 @@
 				$conn = new mysqli($host, $user, $pass, $db);
 				$dane = explode(",", $_SESSION['zalogowany']);
 
-				
-
 				$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','$klasa','$przedmiot','$wiadomosc')");
+				
+				$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' ");
+
+				while ($rowPowiadomienie = $resultPowiadomienie->fetch_assoc()) {	
+				
+					$klasaId = $rowPowiadomienie['klasa_id'];
+					$powiadomienieId = $rowPowiadomienie['id'];
+
+					$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$klasaId' = klasa_id");
+
+					while ($rowUczen = $resultUczen->fetch_assoc()) {
+
+						$uczenId = $rowUczen['id'];
+
+						$conn->query("INSERT INTO odczytane VALUES(NULL,'$uczenId','$powiadomienieId','true')");
+					}
+				}
+
 				$conn->close();
 			}
 			else

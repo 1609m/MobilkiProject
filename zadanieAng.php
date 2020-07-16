@@ -136,6 +136,7 @@
 		$uzupelnij = $row['klucz'];
 		$i++;
 		echo "<b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' value='$uzupelnij'>".$zdanie[1]."<br>[Słowo do uzupełnienia: ".$row['klucz']."]<br><a href='#' class='text-warning'>Zadaj!</a><br><br>";
+		
 	}
 	$conn->close();
 ?>
