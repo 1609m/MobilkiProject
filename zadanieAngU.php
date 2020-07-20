@@ -6,29 +6,51 @@
 		exit();
 	}
 	
+
+	require_once "dbconnect.php";
+	$conn = new mysqli($host, $user, $pass, $db);
+	$result = $conn->query("SELECT * FROM zadania");
+	
+	$iloscWierszy = $result->num_rows;
+
 	$anchor = "";
-	if(isset($_POST['klucz']))
-	{
-		$zdanie = $_POST['zdanie'];
-		$klucz = $_POST['klucz'];
+
+
+
+	for ($i = 0; $i<$iloscWierszy; $i++) {
+		if (isset($_POST["$i"])) {
+			$numer = $_POST["$i"];
+
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	if (6 == 7) {
+		echo "$iloscWierszy";
 		
-		if(strpos($zdanie, "#") !== false)
-		{
-			if($klucz != "")
-			{
+		if (strpos($zdanie, "#") !== false) {
+			if ($klucz != "") {
 				require_once "dbconnect.php";
 				$conn = new mysqli($host, $user, $pass, $db);
 				
 				$result = $conn->query("SELECT tresc, klucz FROM zadania WHERE przedmiot_id = 12 AND typ = 1");
 				$juzJest = false;
-				while($row = $result->fetch_assoc())
-				{
+				while ($row = $result->fetch_assoc()) {
 					if($row['tresc'] == $zdanie && $row['klucz'] == $klucz)
 						$juzJest = true;
 				}
 				
-				if($juzJest == false)
-				{
+				if ($juzJest == false) {
 					$conn->query("INSERT INTO zadania VALUES(NULL,12,1,'$zdanie','$klucz','')");
 				}
 				else
@@ -114,8 +136,10 @@
 					<h2>JĘZYK ANGIELSKI</h2><br>
 					
 					<h3>1. Uzupełnij lukę</h3>
-					<button onclick="rozwin('o1')" class="dropdown-toggle w-75 btn-secondary">Otwórz</button><br>
-					<div id="o1" class="rozwin">
+					
+					
+					
+					
 					<br>
 <?php
 	require_once "dbconnect.php";
@@ -125,10 +149,47 @@
 	$i = 0;
 	while($row = $result->fetch_assoc())
 	{
+		$i++;
 		$zdanie = explode("#", $row['tresc'],2);
 		$uzupelnij = $row['klucz'];
-		$i++;
-		echo "<b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' value=''>".$zdanie[1]."<br><a href='#' class='text-warning'>Sprawdź odpowiedź!</a><br><br>";
+		$tresc = $row['tresc'];
+		$idZadania = $row['id'];
+		$dane = explode(",", $_SESSION['zalogowany']);
+
+		if (isset($_POST["$i"])) {
+			$numer = $_POST["$i"];
+			if ($numer != '') {
+			$resultKlucz = $conn->query("SELECT klucz FROM zadania WHERE alt = '$i'");
+			$rowKlucz = $resultKlucz->fetch_assoc();
+			$klucz = $rowKlucz['klucz'];
+
+				if (ctype_alnum($numer) == false || $numer != $klucz) {
+					echo "<b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' name='$i' >".$zdanie[1]."<br><span style='color: #990000; font-weight: bold'>Niestety twoja odpowiedź jest niepoprawna.</span><br><br><button class='sprawdz'>Sprawdź odpowiedź!</button></a><br><br>";
+				} else {
+					echo "<b>".$i.".</b> ".$zdanie[0].$uzupelnij.$zdanie[1]."<span style='color: #99FF33; font-weight: bold'><br>Brawo twoja odpowiedź jest prawidłowa!.</span></a><br><br>";
+					
+					$conn->query("INSERT INTO wykonanezadania VALUES(NULL,'$dane[1]','$idZadania')");
+				}
+			} else {
+				echo "<b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' name='$i' >".$zdanie[1]."<br><button class='sprawdz'>Sprawdź odpowiedź!</button></a><br><br>";
+			}
+
+		} else {
+			$resultWykonane = $conn->query("SELECT * FROM wykonanezadania WHERE zadanieAng_id = '$idZadania' AND uczen_id = '$dane[1]'");
+			if ($resultWykonane->num_rows > 0) {
+				$rowWykonane = $resultWykonane->fetch_assoc();
+				$wykonane = $rowWykonane['zadanieAng_id'];
+	
+				if ($idZadania == $wykonane) {
+					echo "<b>".$i.".</b> ".$zdanie[0].$uzupelnij.$zdanie[1]."<span style='color: #99FF33; font-weight: bold'>       Zadanie Wykonane.</span><br><br>";
+				} else {
+
+				}
+			} else {
+				echo "<form action='zadanieAngU.php' method='post'><b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' name='$i' >".$zdanie[1]."<br><button class='sprawdz'>Sprawdź odpowiedź!</button></a><br><br></form>";
+				$conn->query("UPDATE zadania SET alt = '$i' WHERE  tresc = '$tresc'");
+			}
+		}
 		
 	}
 	$conn->close();

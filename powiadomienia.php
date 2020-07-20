@@ -18,24 +18,28 @@
 			{
 				require_once "dbconnect.php";
 				$conn = new mysqli($host, $user, $pass, $db);
-				$dane = explode(",", $_SESSION['zalogowany']);
+				$resultSprawdzenie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' ");
+				if ($resultSprawdzenie->num_rows == 0) {
 
-				$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','$klasa','$przedmiot','$wiadomosc')");
-				
-				$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' ");
+					$dane = explode(",", $_SESSION['zalogowany']);
 
-				while ($rowPowiadomienie = $resultPowiadomienie->fetch_assoc()) {	
-				
-					$klasaId = $rowPowiadomienie['klasa_id'];
-					$powiadomienieId = $rowPowiadomienie['id'];
+					$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','$klasa','$przedmiot','$wiadomosc')");
+					
+					$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' ");
 
-					$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$klasaId' = klasa_id");
+					while ($rowPowiadomienie = $resultPowiadomienie->fetch_assoc()) {	
+					
+						$klasaId = $rowPowiadomienie['klasa_id'];
+						$powiadomienieId = $rowPowiadomienie['id'];
 
-					while ($rowUczen = $resultUczen->fetch_assoc()) {
+						$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$klasaId' = klasa_id");
 
-						$uczenId = $rowUczen['id'];
+						while ($rowUczen = $resultUczen->fetch_assoc()) {
 
-						$conn->query("INSERT INTO odczytane VALUES(NULL,'$uczenId','$powiadomienieId','true')");
+							$uczenId = $rowUczen['id'];
+
+							$conn->query("INSERT INTO odczytane VALUES(NULL,'$uczenId','$powiadomienieId','true')");
+						}
 					}
 				}
 
@@ -182,7 +186,7 @@
 	require_once "dbconnect.php";
 	$conn = new mysqli($host, $user, $pass, $db);
 	$dane = explode(",", $_SESSION['zalogowany']);
-	$result = $conn->query("SELECT * FROM powiadomienia WHERE nauczyciel_id = '$dane[1]'");
+	$result = $conn->query("SELECT * FROM powiadomienia WHERE nauczyciel_id = '$dane[1]' ORDER BY id DESC");
 	$i = 0;
 	while($row = $result->fetch_assoc())
 	{
