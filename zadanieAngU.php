@@ -136,7 +136,7 @@
 					<h2>JĘZYK ANGIELSKI</h2><br>
 					
 					<h3>1. Uzupełnij lukę</h3>
-					
+					<form action="zadanieAngU.php" method="post">
 					
 					
 					
@@ -166,7 +166,7 @@
 				if (ctype_alnum($numer) == false || $numer != $klucz) {
 					echo "<b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' name='$i' >".$zdanie[1]."<br><span style='color: #990000; font-weight: bold'>Niestety twoja odpowiedź jest niepoprawna.</span><br><br><button class='sprawdz'>Sprawdź odpowiedź!</button></a><br><br>";
 				} else {
-					echo "<b>".$i.".</b> ".$zdanie[0].$uzupelnij.$zdanie[1]."<span style='color: #99FF33; font-weight: bold'><br>Brawo twoja odpowiedź jest prawidłowa!.</span></a><br><br>";
+					echo "<b>".$i.".</b> ".$zdanie[0].$uzupelnij.$zdanie[1]."<span style='color: #99FF33; font-weight: bold'><br>Brawo twoja odpowiedź jest prawidłowa!</span></a><br><br>";
 					
 					$conn->query("INSERT INTO wykonanezadania VALUES(NULL,'$dane[1]','$idZadania')");
 				}
@@ -182,9 +182,8 @@
 	
 				if ($idZadania == $wykonane) {
 					echo "<b>".$i.".</b> ".$zdanie[0].$uzupelnij.$zdanie[1]."<span style='color: #99FF33; font-weight: bold'>       Zadanie Wykonane.</span><br><br>";
-				} else {
-
-				}
+					$conn->query("UPDATE zadania SET alt = '$i' WHERE  tresc = '$tresc'");
+				} 
 			} else {
 				echo "<form action='zadanieAngU.php' method='post'><b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' name='$i' >".$zdanie[1]."<br><button class='sprawdz'>Sprawdź odpowiedź!</button></a><br><br></form>";
 				$conn->query("UPDATE zadania SET alt = '$i' WHERE  tresc = '$tresc'");
@@ -194,7 +193,7 @@
 	}
 	$conn->close();
 ?>	
-				
+				</form>
 				</div>
 				<br><br>
 				
