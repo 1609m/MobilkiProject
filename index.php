@@ -27,18 +27,51 @@
 				
 				<div class="col-sm-8 my-3 mx-auto bg-secondary text-center text-light">
 					<?php
-						if(isset($_SESSION['logout']))
-						{
+						if (isset($_SESSION['logout'])) {
 							echo "<h2>Wylogowano pomyślnie!</h2>";
 							unset($_SESSION['logout']);
 							exit();
 						}
 					?>
 					<h3>Witamy na stronie<?php
-						if(isset($_SESSION['zalogowany']))
-						{
+						if (isset($_SESSION['zalogowany'])) {					
 							$dane = explode(',', $_SESSION['zalogowany'], 3);
 							echo ", ".$dane[2]."!</h3>";
+							
+							if ($dane[0] == "u") {
+								require_once "dbconnect.php";
+								$conn = new mysqli($host, $user, $pass, $db);
+								$resultOdczytane = $conn->query("SELECT * FROM odczytane WHERE uczen_id = '$dane[1]' ORDER BY id DESC");
+								if ($resultOdczytane->num_rows>0) {
+									echo "<br><h3> Masz nowe powiadomienia!</h3>";
+								
+									while ($rowOdczytane = $resultOdczytane->fetch_assoc()) {
+										$powiadomienieId = $rowOdczytane['powiadomienie_id'];
+										$uczenId = $rowOdczytane['uczen_id'];
+										$result = $conn->query("SELECT * FROM uczniowie WHERE uczniowie.id = '$uczenId'");
+										while ($row = $result->fetch_assoc()) {
+											$klasaId = $row['klasa_id'];
+											$resultPowiadomienia = $conn->query("SELECT * FROM powiadomienia WHERE '$klasaId' = klasa_id AND '$powiadomienieId' = powiadomienia.id ");
+											while ($rowPowiadomienia = $resultPowiadomienia->fetch_assoc()) {
+
+												$nauczycielId = $rowPowiadomienia['nauczyciel_id'];
+												$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielId' = nauczyciele.id");
+												$rowNauczyciel = $resultNauczyciel->fetch_assoc();
+
+												$przedmiotId = $rowPowiadomienia['przedmiot_id'];
+												$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = przedmioty.id");
+												$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+												
+												echo "<hr style='height: 5px; background: black; border: 0px;'>Prowadzący: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
+												//$conn->query("UPDATE odczytane SET odczytanetf = 'true' WHERE uczen_id = '$uczenId'");
+												$conn->query("UPDATE odczytane SET odcz = 1 WHERE uczen_id = '$dane[1]'");
+											}
+										}
+									}
+								}
+								$conn->close();
+							}
+							
 						}
 						else
 							echo "!</h3><br><h4>Zapraszamy do logowania lub rejestracji konta!</h4>
