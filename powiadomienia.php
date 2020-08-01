@@ -19,79 +19,73 @@
 				require_once "dbconnect.php";
 				$conn = new mysqli($host, $user, $pass, $db);
 				
-				$resultSprawdzenie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' ");
 
 				if ($uczen == '0') {
-					if ($resultSprawdzenie->num_rows == 0) {
+					
 
-						$dane = explode(",", $_SESSION['zalogowany']);
+					$dane = explode(",", $_SESSION['zalogowany']);
 
-						$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','0','0','$klasa','$przedmiot','$wiadomosc','1')");
-						
-						$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' ");
+					$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','0','0','0','$klasa','$przedmiot','$wiadomosc')");
+					
+					$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' AND '$klasa' = klasa_id ORDER BY id DESC");
 
-						while ($rowPowiadomienie = $resultPowiadomienie->fetch_assoc()) {	
-						
-							$klasaId = $rowPowiadomienie['klasa_id'];
-							$powiadomienieId = $rowPowiadomienie['id'];
+					while ($rowPowiadomienie = $resultPowiadomienie->fetch_assoc()) {	
+					
+						$klasaId = $rowPowiadomienie['klasa_id'];
+						$powiadomienieId = $rowPowiadomienie['id'];
 
-							$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$klasaId' = klasa_id");
+						$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$klasaId' = klasa_id");
 
-							while ($rowUczen = $resultUczen->fetch_assoc()) {
+						while ($rowUczen = $resultUczen->fetch_assoc()) {
 
-								$uczenId = $rowUczen['id'];
+							$uczenId = $rowUczen['id'];
 
-								$conn->query("INSERT INTO odczytane VALUES(NULL,'$uczenId','0','$powiadomienieId','true')");
-							}
+							$conn->query("INSERT INTO odczytane VALUES(NULL,'$uczenId','0','$powiadomienieId','true')");
 						}
+					break;
 					}
+					
 				} else {
-					if ($resultSprawdzenie->num_rows == 0) {
+					
 
-						$dane = explode(",", $_SESSION['zalogowany']);
-						$imieNazwisko = explode(" ", $_POST['uczen']);
-				
-						$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE  imie = '$imieNazwisko[0]'  AND  nazwisko = '$imieNazwisko[1]' ");
-						
-						$rowUczen = $resultUczen->fetch_assoc();
-						$uczenId = $rowUczen['id'];
+					$dane = explode(",", $_SESSION['zalogowany']);
+					$imieNazwisko = explode(" ", $_POST['uczen']);
+			
+					$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE  imie = '$imieNazwisko[0]'  AND  nazwisko = '$imieNazwisko[1]' ");
+					
+					$rowUczen = $resultUczen->fetch_assoc();
+					$uczenId = $rowUczen['id'];
 
-						$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','0','$uczenId','0','$przedmiot','$wiadomosc','1')");
-						
-						$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' ");
-						$rowPowiadomienie = $resultPowiadomienie->fetch_assoc();
-						$uczenId = $rowPowiadomienie['uczen_id'];
+					$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','0','0','$uczenId','0','$przedmiot','$wiadomosc')");
+					
+					$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' AND '$uczenId' = uczenO_id ORDER BY id DESC");
+					while ($rowPowiadomienie = $resultPowiadomienie->fetch_assoc()) {
+						$uczenId = $rowPowiadomienie['uczenO_id'];
 						$powiadomienieId = $rowPowiadomienie['id'];
 						
 						$conn->query("INSERT INTO odczytane VALUES(NULL,'$uczenId','0','$powiadomienieId','true')");
-
-
-					}
+						break;
+					}		
 				}
 
 			
 				$conn->close();	 
-			}
-			else if (($wiadomosc != "") && isset($_POST['nauczyciel'])) {
+			} else if (($wiadomosc != "") && isset($_POST['nauczyciel'])) {
 				$nauczyciel = $_POST['nauczyciel'];
 				
 				require_once "dbconnect.php";
 				$conn = new mysqli($host, $user, $pass, $db);
+				$dane = explode(",", $_SESSION['zalogowany']);
 
-				$resultSprawdzenie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' AND nauczyciel_id = '$nauczyciel'");
-				if ($resultSprawdzenie->num_rows == 0) {
-
-					$dane = explode(",", $_SESSION['zalogowany']);
-
-					$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','$nauczyciel','0','0','0','$wiadomosc','1')");
-					
-					$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' ");
-					$rowPowiadomienie = $resultPowiadomienie->fetch_assoc();
+				$conn->query("INSERT INTO powiadomienia VALUES(NULL,'$dane[1]','$nauczyciel','0','0','0','0','$wiadomosc')");
+				
+				$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' AND '$nauczyciel' = nauczycielO_id ORDER BY id DESC");
+				while ($rowPowiadomienie = $resultPowiadomienie->fetch_assoc()) {
 					$uczenId = $rowPowiadomienie['uczen_id'];
 					$powiadomienieId = $rowPowiadomienie['id'];
 					$conn->query("INSERT INTO odczytane VALUES(NULL,'0','$nauczyciel','$powiadomienieId','true')");
-					
-				}
+					break;
+				}	
 				$conn->close();
 			} else {
 				$_SESSION['er_wiadomosc'] = "Wypełnij wszystkie pola";
@@ -218,10 +212,13 @@
 				
 				<div class="col-sm-8 col-lg-7 my-3 mx-auto bg-secondary text-center text-light">
 					<h3>Powiadomienia</h3>
+					
 					<?php
 						if (isset($_POST['wiadomosc']) && !isset($_SESSION['er_wiadomosc'])) {
 							echo "<h3 class='text-success font-weight-bold'>Wiadomość została wysłana!</h3><br>";
+							
 						}
+						
 					?>					
 						
 				
@@ -313,15 +310,15 @@
 					</div>
 					<br>
 
-						<h3>Twoje wysłane powiadomienia</h3>
-						<button onclick="rozwin('o1')" class="dropdown-toggle w-75 btn-secondary">Otwórz</button><br>
+					<h3>Twoje wysłane powiadomienia</h3>
+					<button onclick="rozwin('o1')" class="dropdown-toggle w-75 btn-secondary">Otwórz</button><br>
 					<div id="o1" class="rozwin">
 						<br>
 						<?php
 							require_once "dbconnect.php";
 							$conn = new mysqli($host, $user, $pass, $db);
 							$dane = explode(",", $_SESSION['zalogowany']);
-							$result = $conn->query("SELECT * FROM powiadomienia WHERE nauczyciel_id = '$dane[1]' AND un = '1' ORDER BY id DESC");
+							$result = $conn->query("SELECT * FROM powiadomienia WHERE nauczyciel_id = '$dane[1]' ORDER BY id DESC");
 							$i = 0;
 							while ($row = $result->fetch_assoc()) {
 								if ($row['klasa_id'] != '0') {
@@ -330,7 +327,7 @@
 									$rowKlasa = $resultKlasa->fetch_assoc();
 
 									$przedmiotId = $row['przedmiot_id'];
-									$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = przedmioty.id");
+									$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = id");
 									$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
 									
 									if ($i>0) {
@@ -338,13 +335,13 @@
 									}
 									echo "Klasa: ".$rowKlasa['nazwa']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
 									$i++;
-								} else if ($row['uczen_id'] != '0') {
-									$uczenId = $row['uczen_id'];
+								} else if ($row['uczenO_id'] != '0') {
+									$uczenId = $row['uczenO_id'];
 									$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$uczenId' = id");
 									$rowUczen = $resultUczen->fetch_assoc();
 
 									$przedmiotId = $row['przedmiot_id'];
-									$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = przedmioty.id");
+									$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = id");
 									$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
 
 									if ($i>0) {

@@ -33,7 +33,8 @@
 							exit();
 						}
 					?>
-					<h3>Witamy na stronie<?php
+					<h3>Witamy na stronie
+					<?php
 						if (isset($_SESSION['zalogowany'])) {					
 							$dane = explode(',', $_SESSION['zalogowany'], 3);
 							echo ", ".$dane[2]."!</h3>";
@@ -44,38 +45,82 @@
 								$resultOdczytane = $conn->query("SELECT * FROM odczytane WHERE uczen_id = '$dane[1]' ORDER BY id DESC");
 								if ($resultOdczytane->num_rows>0) {
 									echo "<br><h3> Masz nowe powiadomienia!</h3>";
-								
 									while ($rowOdczytane = $resultOdczytane->fetch_assoc()) {
 										$powiadomienieId = $rowOdczytane['powiadomienie_id'];
-										$uczenId = $rowOdczytane['uczen_id'];
-										$result = $conn->query("SELECT * FROM uczniowie WHERE uczniowie.id = '$uczenId'");
-										while ($row = $result->fetch_assoc()) {
-											$klasaId = $row['klasa_id'];
-											$resultPowiadomienia = $conn->query("SELECT * FROM powiadomienia WHERE '$klasaId' = klasa_id AND '$powiadomienieId' = powiadomienia.id ");
-											while ($rowPowiadomienia = $resultPowiadomienia->fetch_assoc()) {
+										$uczenId = $rowOdczytane['uczen_id'];			
+										$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE id = '$uczenId'");
+										$rowUczen = $resultUczen->fetch_assoc();
+										$klasaId = $rowUczen['klasa_id'];
 
-												$nauczycielId = $rowPowiadomienia['nauczyciel_id'];
-												$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielId' = nauczyciele.id");
-												$rowNauczyciel = $resultNauczyciel->fetch_assoc();
+										$resultPowiadomienia = $conn->query("SELECT * FROM powiadomienia WHERE ('$klasaId' = klasa_id OR '$uczenId' = uczenO_id) AND '$powiadomienieId' = id");
+										$rowPowiadomienia = $resultPowiadomienia->fetch_assoc();
+										$klasaIdPowiadomienia = $rowPowiadomienia['klasa_id'];
+										$uczenIdPowiadomienia = $rowPowiadomienia['uczen_id'];
 
-												$przedmiotId = $rowPowiadomienia['przedmiot_id'];
-												$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = przedmioty.id");
-												$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+										$nauczycielId = $rowPowiadomienia['nauczyciel_id'];
+										$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielId' = id");
+										$rowNauczyciel = $resultNauczyciel->fetch_assoc();
+
+										$przedmiotId = $rowPowiadomienia['przedmiot_id'];
+										$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = id");
+										$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+										
+										echo "<hr style='height: 5px; background: black; border: 0px;'>Prowadzący: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
+										
+										$conn->query("UPDATE odczytane SET odcz = 1 WHERE uczen_id = '$dane[1]' AND '$powiadomienieId' = powiadomienie_id");
+											
 												
-												echo "<hr style='height: 5px; background: black; border: 0px;'>Prowadzący: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
-												//$conn->query("UPDATE odczytane SET odczytanetf = 'true' WHERE uczen_id = '$uczenId'");
-												$conn->query("UPDATE odczytane SET odcz = 1 WHERE uczen_id = '$dane[1]'");
-											}
-										}
 									}
 								}
-								$conn->close();
+							} else {
+								require_once "dbconnect.php";
+								$conn = new mysqli($host, $user, $pass, $db);
+								$resultOdczytane = $conn->query("SELECT * FROM odczytane WHERE nauczyciel_id = '$dane[1]' ORDER BY id DESC");
+								if ($resultOdczytane->num_rows>0) {
+									echo "<br><h3> Masz nowe powiadomienia!</h3>";
+									while ($rowOdczytane = $resultOdczytane->fetch_assoc()) {
+										$powiadomienieId = $rowOdczytane['powiadomienie_id']; 
+										$nauczycielId = $rowOdczytane['nauczyciel_id'];
+
+										$resultPowiadomienia = $conn->query("SELECT * FROM powiadomienia WHERE '$nauczycielId' = nauczycielO_id AND '$powiadomienieId' = powiadomienia.id");
+										$rowPowiadomienia = $resultPowiadomienia->fetch_assoc();
+										$nauczycielIdPowiadomienia = $rowPowiadomienia['nauczyciel_id'];
+										$uczenIdPowiadomienia = $rowPowiadomienia['uczen_id'];
+										$przedmiotIdPowiadomienia = $rowPowiadomienia['przedmiot_id'];
+
+										if ($nauczycielIdPowiadomienia != 0) {
+											
+											$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielIdPowiadomienia' = id");
+											$rowNauczyciel = $resultNauczyciel->fetch_assoc();
+											
+											echo "<hr style='height: 5px; background: black; border: 0px;'>".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
+										
+											$conn->query("UPDATE odczytane SET odcz = 1 WHERE nauczyciel_id = '$dane[1]' AND '$powiadomienieId' = powiadomienie_id");
+
+										} else {
+											$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$uczenIdPowiadomienia' = id");
+											$rowUczen = $resultUczen->fetch_assoc();
+											$klasaId = $rowUczen['klasa_id'];
+
+											$resultKlasa = $conn->query("SELECT * FROM klasy WHERE '$klasaId' = id");
+											$rowKlasa = $resultUczen->fetch_assoc();
+
+											$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotIdPowiadomienia' = id");
+											$rowPrzedmiot = $resultUczen->fetch_assoc();
+
+											echo "<hr style='height: 5px; background: black; border: 0px;'>".$rowUczen['imie']." ".$rowUczen['nazwisko']."<br> Klasa: ".$rowKlasa['nazwa']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
+										
+											$conn->query("UPDATE odczytane SET odcz = 1 WHERE nauczyciel_id = '$dane[1]' AND '$powiadomienieId' = powiadomienie_id");
+
+										}
+										
+									}
+								}
 							}
-							
+							$conn->close();
 						}
 						else
-							echo "!</h3><br><h4>Zapraszamy do logowania lub rejestracji konta!</h4>
-							<p>Link powyżej</p>";
+							echo "!</h3><br><h4>Zapraszamy do logowania lub rejestracji konta!</h4><p>Link powyżej</p>";
 					?>
 					
 				</div>

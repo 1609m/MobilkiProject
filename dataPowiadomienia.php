@@ -26,6 +26,17 @@
 		echo json_encode($uczniowie);
 	}
 
+	if (isset($_POST['prz'])) {
+		$db = new DbConnect;
+		$conn = $db->connect();
+
+		$stmt = $conn->prepare("SELECT nazwa FROM przedmioty, zajecia WHERE przedmioty.id = zajecia.przedmiot_id AND zajecia.nauczyciel_id =" .$_POST['prz']);
+		$stmt->execute();
+		$przedmioty = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		echo json_encode($przedmioty);
+		
+	}
+
 	function loadKlasy() {
 		$db = new DbConnect;
 		$conn = $db->connect();
@@ -34,6 +45,16 @@
 		$stmt->execute();
 		$klasy = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $klasy;
+	}
+
+	function loadNauczyciele() {
+		$db = new DbConnect;
+		$conn = $db->connect();
+
+		$stmt = $conn->prepare("SELECT * FROM nauczyciele");
+		$stmt->execute();
+		$nauczyciele = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		return $nauczyciele;
 	}
 
  ?>
