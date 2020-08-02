@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 02 Sie 2020, 01:43
+-- Czas generowania: 02 Sie 2020, 22:49
 -- Wersja serwera: 10.4.13-MariaDB
 -- Wersja PHP: 7.4.7
 
@@ -78,18 +78,6 @@ CREATE TABLE `odczytane` (
   `odcz` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Zrzut danych tabeli `odczytane`
---
-
-INSERT INTO `odczytane` (`id`, `uczen_id`, `nauczyciel_id`, `powiadomienie_id`, `odcz`) VALUES
-(39, 4, 0, 17, 0),
-(41, 7, 0, 17, 0),
-(43, 4, 0, 18, 0),
-(45, 7, 0, 18, 0),
-(47, 4, 0, 19, 0),
-(49, 7, 0, 19, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -115,9 +103,7 @@ INSERT INTO `powiadomienia` (`id`, `nauczyciel_id`, `nauczycielO_id`, `uczen_id`
 (3, 4, 0, 0, 0, 2, 5, 'Szanowni Państwo,\r\nDodałem nowe zagadnienia w zadaniach z J. Niemieckiego pozdrawiam.'),
 (4, 4, 0, 0, 0, 1, 1, 'Witam wszystkich bardzo serdecznie.'),
 (6, 5, 0, 0, 0, 2, 14, 'Witam,\r\nChciałbym przełożyć dzisiejsze zajęcia z geografii na godz. 16:00\r\nPozdrawiam'),
-(17, 4, 0, 0, 0, 1, 5, 'Witam!\r\n\r\nZajęcia odbędą się jutro o 12:30!\r\n\r\nPozdrawiam'),
-(18, 4, 0, 0, 0, 1, 1, 'SIEMANKO'),
-(19, 4, 0, 0, 0, 1, 1, 'Krystian to Cwel');
+(17, 4, 0, 0, 0, 1, 5, 'Witam!\r\n\r\nZajęcia odbędą się jutro o 12:30!\r\n\r\nPozdrawiam');
 
 -- --------------------------------------------------------
 
@@ -350,13 +336,13 @@ ALTER TABLE `nauczyciele`
 -- AUTO_INCREMENT dla tabeli `odczytane`
 --
 ALTER TABLE `odczytane`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=277;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=296;
 
 --
 -- AUTO_INCREMENT dla tabeli `powiadomienia`
 --
 ALTER TABLE `powiadomienia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=194;
 
 --
 -- AUTO_INCREMENT dla tabeli `przedmioty`

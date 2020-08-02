@@ -56,18 +56,32 @@
 										$rowPowiadomienia = $resultPowiadomienia->fetch_assoc();
 										$klasaIdPowiadomienia = $rowPowiadomienia['klasa_id'];
 										$uczenIdPowiadomienia = $rowPowiadomienia['uczen_id'];
-
-										$nauczycielId = $rowPowiadomienia['nauczyciel_id'];
-										$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielId' = id");
-										$rowNauczyciel = $resultNauczyciel->fetch_assoc();
-
-										$przedmiotId = $rowPowiadomienia['przedmiot_id'];
-										$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = id");
-										$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+										$nauczycielIdPowiadomienia = $rowPowiadomienia['nauczyciel_id'];
 										
-										echo "<hr style='height: 5px; background: black; border: 0px;'>Prowadzący: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
-										
-										$conn->query("UPDATE odczytane SET odcz = 1 WHERE uczen_id = '$dane[1]' AND '$powiadomienieId' = powiadomienie_id");
+
+										if ($nauczycielIdPowiadomienia != '0') {
+											$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielIdPowiadomienia' = id");
+											$rowNauczyciel = $resultNauczyciel->fetch_assoc();
+
+											$przedmiotId = $rowPowiadomienia['przedmiot_id'];
+											$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = id");
+											$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+											
+											echo "<hr style='height: 5px; background: black; border: 0px;'>Prowadzący: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
+											
+											$conn->query("UPDATE odczytane SET odcz = 1 WHERE uczen_id = '$dane[1]' AND '$powiadomienieId' = powiadomienie_id");
+										} else {
+											$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$uczenIdPowiadomienia' = id");
+											$rowUczen = $resultUczen->fetch_assoc();
+											$KlasaId = $rowUczen['klasa_id'];
+
+											$resultKlasa = $conn->query("SELECT * FROM klasy WHERE '$KlasaId' = id");
+											$rowKlasa = $resultKlasa->fetch_assoc();											
+
+											echo "<hr style='height: 5px; background: black; border: 0px;'>Uczeń: ".$rowUczen['imie']." ".$rowUczen['nazwisko']."<br> Klasa: ".$rowKlasa['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
+
+											$conn->query("UPDATE odczytane SET odcz = 1 WHERE uczen_id = '$dane[1]' AND '$powiadomienieId' = powiadomienie_id");
+										}
 											
 												
 									}
@@ -83,13 +97,12 @@
 										$nauczycielId = $rowOdczytane['nauczyciel_id'];
 
 										$resultPowiadomienia = $conn->query("SELECT * FROM powiadomienia WHERE '$nauczycielId' = nauczycielO_id AND '$powiadomienieId' = powiadomienia.id");
-										$rowPowiadomienia = $resultPowiadomienia->fetch_assoc();
-										$nauczycielIdPowiadomienia = $rowPowiadomienia['nauczyciel_id'];
-										$uczenIdPowiadomienia = $rowPowiadomienia['uczen_id'];
-										$przedmiotIdPowiadomienia = $rowPowiadomienia['przedmiot_id'];
+										$rowPowiadomienia = $resultPowiadomienia->fetch_assoc();										
+										
+										
 
-										if ($nauczycielIdPowiadomienia != 0) {
-											
+										if ($rowPowiadomienia['nauczyciel_id'] != 0) {
+											$nauczycielIdPowiadomienia = $rowPowiadomienia['nauczyciel_id'];
 											$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielIdPowiadomienia' = id");
 											$rowNauczyciel = $resultNauczyciel->fetch_assoc();
 											
@@ -98,15 +111,17 @@
 											$conn->query("UPDATE odczytane SET odcz = 1 WHERE nauczyciel_id = '$dane[1]' AND '$powiadomienieId' = powiadomienie_id");
 
 										} else {
+											$przedmiotIdPowiadomienia = $rowPowiadomienia['przedmiot_id'];
+											$uczenIdPowiadomienia = $rowPowiadomienia['uczen_id'];
 											$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$uczenIdPowiadomienia' = id");
 											$rowUczen = $resultUczen->fetch_assoc();
 											$klasaId = $rowUczen['klasa_id'];
 
 											$resultKlasa = $conn->query("SELECT * FROM klasy WHERE '$klasaId' = id");
-											$rowKlasa = $resultUczen->fetch_assoc();
+											$rowKlasa = $resultKlasa->fetch_assoc();
 
 											$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotIdPowiadomienia' = id");
-											$rowPrzedmiot = $resultUczen->fetch_assoc();
+											$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
 
 											echo "<hr style='height: 5px; background: black; border: 0px;'>".$rowUczen['imie']." ".$rowUczen['nazwisko']."<br> Klasa: ".$rowKlasa['nazwa']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$rowPowiadomienia['wiadomosc'])."<br><br>";
 										

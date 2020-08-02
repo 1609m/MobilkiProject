@@ -22,8 +22,7 @@
 					$dane = explode(",", $_SESSION['zalogowany']);
 					$imieNazwisko = explode(" ", $_POST['uczen']);
 			
-					$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE  imie = '$imieNazwisko[0]'  AND  nazwisko = '$imieNazwisko[1]' ");
-					
+					$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE imie = '$imieNazwisko[0]' AND nazwisko = '$imieNazwisko[1]' ");
 					$rowUczen = $resultUczen->fetch_assoc();
 					$uczenId = $rowUczen['id'];
 
@@ -41,12 +40,17 @@
 				$conn->close();	 
 			} else if (($wiadomosc != "") && isset($_POST['nauczyciel'])) {
 				$nauczyciel = $_POST['nauczyciel'];
+				$przedmiot = $_POST['przedmiot'];
 				
 				require_once "dbconnect.php";
 				$conn = new mysqli($host, $user, $pass, $db);
 				$dane = explode(",", $_SESSION['zalogowany']);
 
-				$conn->query("INSERT INTO powiadomienia VALUES(NULL,'0','$nauczyciel','$dane[1]','0','0','0','$wiadomosc')");
+				$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE nazwa = '$przedmiot'");
+				$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+				$przedmiotId = $rowPrzedmiot['id'];
+
+				$conn->query("INSERT INTO powiadomienia VALUES(NULL,'0','$nauczyciel','$dane[1]','0','0','$przedmiotId','$wiadomosc')");
 				
 				$resultPowiadomienie = $conn->query("SELECT * FROM powiadomienia WHERE wiadomosc = '$wiadomosc' AND '$nauczyciel' = nauczycielO_id ORDER BY id DESC");
 				while ($rowPowiadomienie = $resultPowiadomienie->fetch_assoc()) {
@@ -211,7 +215,7 @@
 					<button onclick="rozwin('d1')" class="dropdown-toggle w-75 btn-secondary">Wyślij wiadomość</button><br>
 					<div id="d1" class="rozwin">
 					<br>
-						<form role="form" action="powiadomienia.php" method="post">
+						<form role="form" action="powiadomieniaU.php" method="post">
 							<label><input type="radio" name="status" value="nauczyciel" onclick="toggle()" id="wybierz"> Nauczyciel</label>
 							<label><input type="radio" name="status" value="uczen" onclick="toggle()" checked> Uczeń</label>
 							<br><br>
@@ -293,13 +297,15 @@
 									if ($i>0) {
 										echo "<hr style='height: 5px; background: black; border: 0px;'>";
 									}
-									echo "Uczeń: ".$rowUczen['imie']." ".$rowUczen['nazwisko']."<br> Przedmiot: ".$rowKlasa['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
+									echo "Uczeń: ".$rowUczen['imie']." ".$rowUczen['nazwisko']."<br> Klasa: ".$rowKlasa['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
 									$i++;
 
 								} else {
 									$nauczycielId = $row['nauczycielO_id'];
+									$przedmiotId = $row['przedmiot_id'];
 									$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielId' = id");
 									$rowNauczyciel = $resultNauczyciel->fetch_assoc();
+									
 
 									$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = id");
 									$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
@@ -307,7 +313,7 @@
 									if ($i>0) {
 										echo "<hr style='height: 5px; background: black; border: 0px;'>";
 									}
-									echo "Nauczyciel: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
+									echo "Nauczyciel: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
 									$i++;
 								}
 								
@@ -328,38 +334,64 @@
 							require_once "dbconnect.php";
 							$conn = new mysqli($host, $user, $pass, $db);
 							$dane = explode(",", $_SESSION['zalogowany']);
-							$result = $conn->query("SELECT * FROM powiadomienia WHERE uczen_id = '$dane[1]' ORDER BY id DESC");
+
+							$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$dane[1]' = id");
+							$rowUczen = $resultUczen->fetch_assoc();
+							$klasaId = $rowUczen['klasa_id'];
+
+							$result = $conn->query("SELECT * FROM powiadomienia WHERE uczenO_id = '$dane[1]' OR klasa_id = '$klasaId' ORDER BY id DESC");
 							$i = 0;
 							while ($row = $result->fetch_assoc()) {
 								if ($row['uczenO_id'] != '0') {
-									$uczenId = $row['uczenO_id'];
-									$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$uczenId' = id");
-									$rowUczen = $resultUczen->fetch_assoc();
+									if ($row['uczen_id'] != '0') {
+										$uczenId = $row['uczen_id'];
 
-									$klasaId = $row['klasa_id'];
-									$resultKlasa = $conn->query("SELECT * FROM klasy WHERE '$klasaId' = id");
-									$rowKlasa = $resultKlasa->fetch_assoc();
+										$resultUczen = $conn->query("SELECT * FROM uczniowie WHERE '$uczenId' = id");
+										$rowUczen = $resultUczen->fetch_assoc();
+										$klasaIdW = $rowUczen['klasa_id'];
+		
+										$resultKlasa = $conn->query("SELECT * FROM klasy WHERE '$klasaIdW' = id");
+										$rowKlasa = $resultKlasa->fetch_assoc();
 
-									if ($i>0) {
-										echo "<hr style='height: 5px; background: black; border: 0px;'>";
+										if ($i>0) {
+											echo "<hr style='height: 5px; background: black; border: 0px;'>";
+										}
+										echo "Uczeń: ".$rowUczen['imie']." ".$rowUczen['nazwisko']."<br> Klasa: ".$rowKlasa['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
+										$i++;
+									} else {
+										$nauczycielId = $row['nauczyciel_id'];
+										$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielId' = id");
+										$rowNauczyciel = $resultNauczyciel->fetch_assoc();
+
+										$przedmiotId = $row['przedmiot_id'];
+										$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = id");
+										$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
+
+										if ($i>0) {
+											echo "<hr style='height: 5px; background: black; border: 0px;'>";
+										}
+										echo "Nauczyciel: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
+										$i++;
 									}
-									echo "Uczeń: ".$rowUczen['imie']." ".$rowUczen['nazwisko']."<br> Przedmiot: ".$rowKlasa['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
-									$i++;
 
 								} else {
-									$nauczycielId = $row['nauczycielO_id'];
+									$nauczycielId = $row['nauczyciel_id'];
+
 									$resultNauczyciel = $conn->query("SELECT * FROM nauczyciele WHERE '$nauczycielId' = id");
 									$rowNauczyciel = $resultNauczyciel->fetch_assoc();
 
+									$przedmiotId = $row['przedmiot_id'];
 									$resultPrzedmiot = $conn->query("SELECT * FROM przedmioty WHERE '$przedmiotId' = id");
 									$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
 
 									if ($i>0) {
 										echo "<hr style='height: 5px; background: black; border: 0px;'>";
 									}
-									echo "Nauczyciel: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
+									echo "Nauczyciel: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
 									$i++;
 								}
+
+							
 								
 							}
 							$conn->close();
