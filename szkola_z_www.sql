@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 20 Lip 2020, 14:33
+-- Czas generowania: 02 Sie 2020, 22:49
 -- Wersja serwera: 10.4.13-MariaDB
 -- Wersja PHP: 7.4.7
 
@@ -73,30 +73,10 @@ INSERT INTO `nauczyciele` (`id`, `imie`, `nazwisko`, `login`, `haslo`) VALUES
 CREATE TABLE `odczytane` (
   `id` int(11) NOT NULL,
   `uczen_id` int(11) NOT NULL,
+  `nauczyciel_id` int(11) NOT NULL,
   `powiadomienie_id` int(11) NOT NULL,
   `odcz` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Zrzut danych tabeli `odczytane`
---
-
-INSERT INTO `odczytane` (`id`, `uczen_id`, `powiadomienie_id`, `odcz`) VALUES
-(31, 4, 16, 0),
-(32, 6, 16, 0),
-(33, 7, 16, 0),
-(35, 4, 16, 0),
-(36, 6, 16, 0),
-(37, 7, 16, 0),
-(39, 4, 17, 0),
-(40, 6, 17, 0),
-(41, 7, 17, 0),
-(43, 4, 18, 0),
-(44, 6, 18, 0),
-(45, 7, 18, 0),
-(47, 4, 19, 0),
-(48, 6, 19, 0),
-(49, 7, 19, 0);
 
 -- --------------------------------------------------------
 
@@ -107,6 +87,9 @@ INSERT INTO `odczytane` (`id`, `uczen_id`, `powiadomienie_id`, `odcz`) VALUES
 CREATE TABLE `powiadomienia` (
   `id` int(11) NOT NULL,
   `nauczyciel_id` int(11) NOT NULL,
+  `nauczycielO_id` int(11) NOT NULL,
+  `uczen_id` int(11) NOT NULL,
+  `uczenO_id` int(11) NOT NULL,
   `klasa_id` int(11) NOT NULL,
   `przedmiot_id` int(11) NOT NULL,
   `wiadomosc` text CHARACTER SET utf8 COLLATE utf8_polish_ci NOT NULL
@@ -116,13 +99,11 @@ CREATE TABLE `powiadomienia` (
 -- Zrzut danych tabeli `powiadomienia`
 --
 
-INSERT INTO `powiadomienia` (`id`, `nauczyciel_id`, `klasa_id`, `przedmiot_id`, `wiadomosc`) VALUES
-(3, 4, 2, 5, 'Szanowni Państwo,\r\nDodałem nowe zagadnienia w zadaniach z J. Niemieckiego pozdrawiam.'),
-(4, 4, 1, 1, 'Witam wszystkich bardzo serdecznie.'),
-(6, 5, 2, 14, 'Witam,\r\nChciałbym przełożyć dzisiejsze zajęcia z geografii na godz. 16:00\r\nPozdrawiam'),
-(17, 4, 1, 5, 'Witam!\r\n\r\nZajęcia odbędą się jutro o 12:30!\r\n\r\nPozdrawiam'),
-(18, 4, 1, 1, 'SIEMANKO'),
-(19, 4, 1, 1, 'Krystian to Cwel');
+INSERT INTO `powiadomienia` (`id`, `nauczyciel_id`, `nauczycielO_id`, `uczen_id`, `uczenO_id`, `klasa_id`, `przedmiot_id`, `wiadomosc`) VALUES
+(3, 4, 0, 0, 0, 2, 5, 'Szanowni Państwo,\r\nDodałem nowe zagadnienia w zadaniach z J. Niemieckiego pozdrawiam.'),
+(4, 4, 0, 0, 0, 1, 1, 'Witam wszystkich bardzo serdecznie.'),
+(6, 5, 0, 0, 0, 2, 14, 'Witam,\r\nChciałbym przełożyć dzisiejsze zajęcia z geografii na godz. 16:00\r\nPozdrawiam'),
+(17, 4, 0, 0, 0, 1, 5, 'Witam!\r\n\r\nZajęcia odbędą się jutro o 12:30!\r\n\r\nPozdrawiam');
 
 -- --------------------------------------------------------
 
@@ -206,14 +187,15 @@ CREATE TABLE `wykonanezadania` (
 --
 
 INSERT INTO `wykonanezadania` (`id`, `uczen_id`, `zadanieAng_id`) VALUES
-(1, 3, 2),
 (2, 5, 7),
 (3, 5, 11),
 (4, 5, 12),
 (5, 5, 10),
 (6, 5, 9),
 (7, 5, 3),
-(8, 5, 2);
+(8, 5, 2),
+(38, 3, 9),
+(39, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -354,13 +336,13 @@ ALTER TABLE `nauczyciele`
 -- AUTO_INCREMENT dla tabeli `odczytane`
 --
 ALTER TABLE `odczytane`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=296;
 
 --
 -- AUTO_INCREMENT dla tabeli `powiadomienia`
 --
 ALTER TABLE `powiadomienia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=194;
 
 --
 -- AUTO_INCREMENT dla tabeli `przedmioty`
@@ -384,7 +366,7 @@ ALTER TABLE `uczniowie`
 -- AUTO_INCREMENT dla tabeli `wykonanezadania`
 --
 ALTER TABLE `wykonanezadania`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT dla tabeli `zadania`
