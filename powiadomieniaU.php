@@ -202,6 +202,7 @@
 				
 				<div class="col-sm-8 col-lg-7 my-3 mx-auto bg-secondary text-center text-light">
 					<h1>Powiadomienia</h1>
+
 					
 					<?php
 						if (isset($_POST['wiadomosc']) && !isset($_SESSION['er_wiadomosc'])) {

@@ -122,7 +122,10 @@ table#tabelaKlas
 	padding: 10px;
 }
 
-
+.card
+{
+	height: 80px;
+}
 
 
 

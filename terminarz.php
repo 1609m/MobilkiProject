@@ -28,7 +28,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&amp;subset=latin-ext" rel="stylesheet">
 
   
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
+	<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.4.0/fullcalendar.css" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-alpha.6/css/bootstrap.css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -123,12 +123,12 @@
    });
   });
    
-</script>
+</script>-->
 
  </head>
  <body>
  	
-  	<br />
+  	<!--<br />
 	<h3 align="center">Witamy w Terminarzu</h3>
 	<form action="terminarz.php" method="post">
 		<input type="submit" name="powrot" value="wróć">
@@ -136,8 +136,53 @@
 	<br />
 	<div class="container">
 		<div id="calendar"></div>
-	</div>
+	</div>-->
 	
+  <?php $active = "terminarz"; require "header.php";	?>
+	<main>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-sm-8 my-3 mx-auto bg-secondary text-center text-light">
+
+          <h2>Terminarz</h2><br><br>
+          
+          <div class="row">
+
+<?php
+  $offset = 2;
+
+  for($i = 0; $i < 6; $i++)  {
+    for($j = 1; $j <= 7; $j++)  {
+      echo "<div class='col-1 m-3 card";
+      $id = $i*7 + $j - $offset;
+      if($id<= 31 && $id > 0)
+        echo " bg-dark' id='".$id."'><h4>".$id."</h4></div>";
+      else
+        echo " bg-secondary'></div>";
+    }
+    echo "<div class='w-100'></div>";
+  }
+  
+  
+  
+?>
+
+
+          </div>
+				</div>
+			</div>
+		</div>
+	</main>
+	
+	
+	
+	
+	
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	
+	<script src="js/bootstrap.min.js"></script>
 	
 	
 	

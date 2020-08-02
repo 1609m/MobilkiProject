@@ -72,8 +72,8 @@
 					<li><ul class="navbar-nav navbar-expand-sm list-inline justify-content-center">
 						
 						<!--  POWIADOMIENIA  -->
-						<li class="m-1 list-inline-item"><a href="powiadomienia.php" class="list-group-item list-group-item-dark list-group-item-action powiadomienia">POWIADOMIENIA</a></li>
-						<li class="m-1 list-inline-item"><a href="powiadomieniaU.php" class="list-group-item list-group-item-dark list-group-item-action powiadomieniaU">POWIADOMIENIA</a></li>
+						<li class="m-1 list-inline-item powiadomienia"><a href="powiadomienia.php" class="list-group-item list-group-item-dark list-group-item-action powiadomienia">POWIADOMIENIA</a></li>
+						<li class="m-1 list-inline-item powiadomieniaU"><a href="powiadomieniaU.php" class="list-group-item list-group-item-dark list-group-item-action powiadomieniaU">POWIADOMIENIA</a></li>
 						
 						<!--  MOJE KONTO  -->
 						<li class="m-1 list-inline-item"><a href="mojeKonto.php" class="list-group-item list-group-item-dark list-group-item-action mojeKonto">MOJE KONTO</a></li>
