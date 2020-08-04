@@ -142,23 +142,34 @@
 	<main>
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col-sm-8 my-3 mx-auto bg-secondary text-center text-light">
+				<div class="col-lg-8 my-3 mx-auto bg-secondary text-center text-light">
 
-          <h2>Terminarz</h2><br><br>
-          
-          <div class="row">
+          <h2>Terminarz</h2><br>
 
 <?php
-  $offset = 2;
+  $date = new DateTime();
 
+  $months = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'];
+  echo "<h2><b>".$months[$date->format('n') - 1]." ".$date->format('Y')."</b></h2><br>";
+
+  $offset = ($date->format('N') - $date->format('j')%7 + 7)%7;
+
+  echo "<div class='row'>";
   for($i = 0; $i < 6; $i++)  {
     for($j = 1; $j <= 7; $j++)  {
+
       echo "<div class='col-1 m-3 card";
       $id = $i*7 + $j - $offset;
-      if($id<= 31 && $id > 0)
-        echo " bg-dark' id='".$id."'><h4>".$id."</h4></div>";
+      if($id <= $date->format('t') && $id > 0) {
+        if($id == $date->format('j'))
+          echo " bg-white text-dark'";
+        else
+          echo " bg-dark'";
+        echo " id='".$id."'><h4>".$id."</h4></div>";
+      }
       else
         echo " bg-secondary'></div>";
+
     }
     echo "<div class='w-100'></div>";
   }
@@ -166,6 +177,10 @@
   
   
 ?>
+
+<script>
+  $(#)
+</script>
 
 
           </div>

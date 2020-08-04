@@ -33,11 +33,11 @@
 							exit();
 						}
 					?>
-					<h3>Witamy na stronie
+					<h2>Witamy na stronie
 					<?php
 						if (isset($_SESSION['zalogowany'])) {					
 							$dane = explode(',', $_SESSION['zalogowany'], 3);
-							echo ", ".$dane[2]."!</h3>";
+							echo ", ".$dane[2]."!</h2>";
 							
 							if ($dane[0] == "u") {
 								require_once "dbconnect.php";
@@ -135,7 +135,7 @@
 							$conn->close();
 						}
 						else
-							echo "!</h3><br><h4>Zapraszamy do logowania lub rejestracji konta!</h4><p>Link powyżej</p>";
+							echo "!</h2><br><h4>Zapraszamy do logowania lub rejestracji konta!</h4><p>Link powyżej</p>";
 					?>
 					
 				</div>
