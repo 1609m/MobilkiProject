@@ -254,7 +254,7 @@
 							</select>
 							</label> 
 
-							<label class="d-none for="przedmiot" id ="przedmiot2">     Wybierz przedmiot 
+							<label class="d-none" for="przedmiot" id ="przedmiot2">     Wybierz przedmiot 
 							<select name="przedmiot" id="przedmiot">
 							</select>
 							</label>		
