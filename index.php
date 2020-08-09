@@ -33,8 +33,7 @@
 							exit();
 						}
 					?>
-					<h2>Witamy na stronie
-					<?php
+					<h2>Witamy na stronie<?php
 						if (isset($_SESSION['zalogowany'])) {					
 							$dane = explode(',', $_SESSION['zalogowany'], 3);
 							echo ", ".$dane[2]."!</h2>";

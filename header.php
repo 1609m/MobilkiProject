@@ -24,11 +24,11 @@
 					<li><ul class="navbar-nav navbar-expand-sm list-inline justify-content-center">
 						
 						<!--  KLASY  -->
-						<li class="m-1 list-inline-item"><a href="klasy.php" class="list-group-item list-group-item-dark list-group-item-action klasy">KLASY</a>
+						<li class="m-1 list-inline-item"><a href="klasy.php" class="list-group-item list-group-item-dark list-group-item-action klasy d-none">KLASY</a>
 						</li>
 						
 						<!-- PRZEDMIOTY  -->
-						<li class="m-1 list-inline-item przedmioty"><div class="dropdown w-100">
+						<li class="m-1 list-inline-item przedmioty d-none"><div class="dropdown w-100">
 							
 							<a href="#" class="dropbtn dropdown-toggle list-group-item list-group-item-dark list-group-item-action p_mat p_ang">PRZEDMIOTY</a>
 							
@@ -42,7 +42,7 @@
 						</div></li>
 						
 						<!--  ZADANIA  -->
-						<li class="m-1 list-inline-item"><div class="dropdown w-100">
+						<li class="m-1 list-inline-item zadania d-none"><div class="dropdown w-100">
 							
 							<a href="#" class="dropbtn dropdown-toggle list-group-item list-group-item-dark list-group-item-action z_zadane z_doZrobienia z_mat z_ang z_angU">ZADANIA</a>
 							
@@ -65,21 +65,21 @@
 						</div></li>
 						
 						<!--  TERMINARZ  -->
-						<li class="m-1 list-inline-item"><a href="terminarz.php" class="list-group-item list-group-item-dark list-group-item-action terminarz">TERMINARZ</a></li>
+						<li class="m-1 list-inline-item"><a href="terminarz.php" class="list-group-item list-group-item-dark list-group-item-action terminarz d-none">TERMINARZ</a></li>
 						
 					</ul></li>
 					
 					<li><ul class="navbar-nav navbar-expand-sm list-inline justify-content-center">
 						
 						<!--  POWIADOMIENIA  -->
-						<li class="m-1 list-inline-item powiadomienia"><a href="powiadomienia.php" class="list-group-item list-group-item-dark list-group-item-action powiadomienia">POWIADOMIENIA</a></li>
-						<li class="m-1 list-inline-item powiadomieniaU"><a href="powiadomieniaU.php" class="list-group-item list-group-item-dark list-group-item-action powiadomieniaU">POWIADOMIENIA</a></li>
+						<li class="m-1 list-inline-item powiadomienia d-none"><a href="powiadomienia.php" class="list-group-item list-group-item-dark list-group-item-action powiadomienia">POWIADOMIENIA</a></li>
+						<li class="m-1 list-inline-item powiadomieniaU d-none"><a href="powiadomieniaU.php" class="list-group-item list-group-item-dark list-group-item-action powiadomieniaU">POWIADOMIENIA</a></li>
 						
 						<!--  MOJE KONTO  -->
-						<li class="m-1 list-inline-item"><a href="mojeKonto.php" class="list-group-item list-group-item-dark list-group-item-action mojeKonto">MOJE KONTO</a></li>
+						<li class="m-1 list-inline-item"><a href="mojeKonto.php" class="list-group-item list-group-item-dark list-group-item-action mojeKonto d-none">MOJE KONTO</a></li>
 						
 						<!--  WYLOGUJ  -->
-						<li class="m-1 list-inline-item"><a href="wyloguj.php" class="list-group-item list-group-item-dark list-group-item-action">WYLOGUJ</a></li>
+						<li class="m-1 list-inline-item wyloguj d-none"><a href="wyloguj.php" class="list-group-item list-group-item-dark list-group-item-action">WYLOGUJ</a></li>
 						
 						
 						
@@ -99,19 +99,25 @@
 		
 		if(naucz == "u")
 		{
-			$('.klasy').addClass('d-none');
+			$('.mojeKonto').removeClass('d-none');
+			$('.terminarz').removeClass('d-none');
+			$('.przedmioty').removeClass('d-none');
+			$('.zadania').removeClass('d-none');
 			$('.z_zadane').addClass('d-none');
 			$('.z_ang').addClass('d-none');
-			$('.powiadomienia').addClass('d-none');
-
-			
+			$('.powiadomieniaU').removeClass('d-none');
+			$('.wyloguj').removeClass('d-none');
 		}
 		else if(naucz == "n")
 		{
-			$('.przedmioty').addClass('d-none');
+			$('.terminarz').removeClass('d-none');
+			$('.klasy').removeClass('d-none');
+			$('.zadania').removeClass('d-none');
+			$('.mojeKonto').removeClass('d-none');
 			$('.z_doZrobienia').addClass('d-none');
 			$('.z_angU').addClass('d-none');
-			$('.powiadomieniaU').addClass('d-none');
+			$('.powiadomienia').removeClass('d-none');
+			$('.wyloguj').removeClass('d-none');
 		}
 		else
 		{
