@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 02 Sie 2020, 22:49
+-- Czas generowania: 10 Sie 2020, 19:30
 -- Wersja serwera: 10.4.13-MariaDB
 -- Wersja PHP: 7.4.7
 
@@ -81,6 +81,20 @@ CREATE TABLE `odczytane` (
 -- --------------------------------------------------------
 
 --
+-- Struktura tabeli dla tabeli `ogloszeniazad`
+--
+
+CREATE TABLE `ogloszeniazad` (
+  `id` int(11) NOT NULL,
+  `nauczyciel_id` int(11) NOT NULL,
+  `klasa_id` int(11) NOT NULL,
+  `przedmiot_id` int(11) NOT NULL,
+  `wiadomosc` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Struktura tabeli dla tabeli `powiadomienia`
 --
 
@@ -103,7 +117,9 @@ INSERT INTO `powiadomienia` (`id`, `nauczyciel_id`, `nauczycielO_id`, `uczen_id`
 (3, 4, 0, 0, 0, 2, 5, 'Szanowni Państwo,\r\nDodałem nowe zagadnienia w zadaniach z J. Niemieckiego pozdrawiam.'),
 (4, 4, 0, 0, 0, 1, 1, 'Witam wszystkich bardzo serdecznie.'),
 (6, 5, 0, 0, 0, 2, 14, 'Witam,\r\nChciałbym przełożyć dzisiejsze zajęcia z geografii na godz. 16:00\r\nPozdrawiam'),
-(17, 4, 0, 0, 0, 1, 5, 'Witam!\r\n\r\nZajęcia odbędą się jutro o 12:30!\r\n\r\nPozdrawiam');
+(17, 4, 0, 0, 0, 1, 5, 'Witam!\r\n\r\nZajęcia odbędą się jutro o 12:30!\r\n\r\nPozdrawiam'),
+(196, 0, 3, 4, 0, 0, 11, '123'),
+(197, 0, 3, 4, 0, 0, 1, 'eldo');
 
 -- --------------------------------------------------------
 
@@ -275,6 +291,12 @@ ALTER TABLE `odczytane`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeksy dla tabeli `ogloszeniazad`
+--
+ALTER TABLE `ogloszeniazad`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeksy dla tabeli `powiadomienia`
 --
 ALTER TABLE `powiadomienia`
@@ -336,13 +358,19 @@ ALTER TABLE `nauczyciele`
 -- AUTO_INCREMENT dla tabeli `odczytane`
 --
 ALTER TABLE `odczytane`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=296;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300;
+
+--
+-- AUTO_INCREMENT dla tabeli `ogloszeniazad`
+--
+ALTER TABLE `ogloszeniazad`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT dla tabeli `powiadomienia`
 --
 ALTER TABLE `powiadomienia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=194;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=198;
 
 --
 -- AUTO_INCREMENT dla tabeli `przedmioty`
