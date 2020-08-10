@@ -161,7 +161,7 @@
 							
 							<br>
 							Napisz wiadomość<br>
-							<textarea name="wiadomosc" rows="6" cols="80"></textarea><br>
+							<textarea name="wiadomosc" rows="6" class="w-75"></textarea><br>
 							<input type="hidden" name="action" value="ogloszenie">
 							<input type="submit" value="Wyślij">
 						</form>
@@ -205,7 +205,7 @@
 										$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
 										
 										if ($j>1) {
-											echo "<hr style='height: 5px; background: black; border: 0px;'>";
+											echo "<hr style='height: 5px; background: #373a3d; border: 0px;'>";
 										}
 										echo "Klasa: ".$rowKlasa['nazwa']."<br><br>Wiadomość: <br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br><input type='hidden' name='rozwinOgloszenia'><input name='$i' type='submit' value='Usuń ogłoszenie'>";
 										$j++;

@@ -261,7 +261,7 @@
 
 							<br>
 							Napisz wiadomość<br>
-							<textarea name="wiadomosc" rows="6" cols="80"></textarea><br>
+							<textarea name="wiadomosc" rows="6" class="w-75"></textarea><br>
 							<input type="submit" value="Wyślij">
 						</form>
 						<br>
@@ -296,7 +296,7 @@
 									$rowKlasa = $resultKlasa->fetch_assoc();
 
 									if ($i>0) {
-										echo "<hr style='height: 5px; background: black; border: 0px;'>";
+										echo "<hr style='height: 5px; background: #373a3d; border: 0px;'>";
 									}
 									echo "Uczeń: ".$rowUczen['imie']." ".$rowUczen['nazwisko']."<br> Klasa: ".$rowKlasa['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
 									$i++;
@@ -312,7 +312,7 @@
 									$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
 
 									if ($i>0) {
-										echo "<hr style='height: 5px; background: black; border: 0px;'>";
+										echo "<hr style='height: 5px; background: #373a3d; border: 0px;'>";
 									}
 									echo "Nauczyciel: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
 									$i++;
@@ -369,7 +369,7 @@
 										$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
 
 										if ($i>0) {
-											echo "<hr style='height: 5px; background: black; border: 0px;'>";
+											echo "<hr style='height: 5px; background: #373a3d; border: 0px;'>";
 										}
 										echo "Nauczyciel: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
 										$i++;
@@ -386,7 +386,7 @@
 									$rowPrzedmiot = $resultPrzedmiot->fetch_assoc();
 
 									if ($i>0) {
-										echo "<hr style='height: 5px; background: black; border: 0px;'>";
+										echo "<hr style='height: 5px; background: #373a3d; border: 0px;'>";
 									}
 									echo "Nauczyciel: ".$rowNauczyciel['imie']." ".$rowNauczyciel['nazwisko']."<br> Przedmiot: ".$rowPrzedmiot['nazwa']."<br><br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br>";
 									$i++;
