@@ -84,6 +84,7 @@
         <a href='terminarz.php?m=".($month+1)."' class='text-warning'>></a></h2></form><br>";
 
     $offset = ($date->format('N') - $date->format('j')%7 + 7)%7;
+	
 
     echo "<div class='row mx-auto display-inline-block pl-lg-5'>";
     for($i = 0; $i < 6; $i++) {
