@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 10 Sie 2020, 19:30
+-- Czas generowania: 16 Sie 2020, 23:04
 -- Wersja serwera: 10.4.13-MariaDB
 -- Wersja PHP: 7.4.7
 
@@ -95,6 +95,45 @@ CREATE TABLE `ogloszeniazad` (
 -- --------------------------------------------------------
 
 --
+-- Struktura tabeli dla tabeli `paczkap`
+--
+
+CREATE TABLE `paczkap` (
+  `id` int(11) NOT NULL,
+  `paczkazad_id` int(11) NOT NULL,
+  `zadania_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Zrzut danych tabeli `paczkap`
+--
+
+INSERT INTO `paczkap` (`id`, `paczkazad_id`, `zadania_id`) VALUES
+(8, 9, 2),
+(9, 9, 7),
+(10, 9, 35);
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `paczkazad`
+--
+
+CREATE TABLE `paczkazad` (
+  `id` int(11) NOT NULL,
+  `klasa_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Zrzut danych tabeli `paczkazad`
+--
+
+INSERT INTO `paczkazad` (`id`, `klasa_id`) VALUES
+(9, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Struktura tabeli dla tabeli `powiadomienia`
 --
 
@@ -119,7 +158,8 @@ INSERT INTO `powiadomienia` (`id`, `nauczyciel_id`, `nauczycielO_id`, `uczen_id`
 (6, 5, 0, 0, 0, 2, 14, 'Witam,\r\nChciałbym przełożyć dzisiejsze zajęcia z geografii na godz. 16:00\r\nPozdrawiam'),
 (17, 4, 0, 0, 0, 1, 5, 'Witam!\r\n\r\nZajęcia odbędą się jutro o 12:30!\r\n\r\nPozdrawiam'),
 (196, 0, 3, 4, 0, 0, 11, '123'),
-(197, 0, 3, 4, 0, 0, 1, 'eldo');
+(197, 0, 3, 4, 0, 0, 1, 'eldo'),
+(198, 0, 4, 3, 0, 0, 12, '123');
 
 -- --------------------------------------------------------
 
@@ -224,22 +264,49 @@ CREATE TABLE `zadania` (
   `przedmiot_id` int(11) NOT NULL,
   `typ` int(11) NOT NULL,
   `tresc` text COLLATE utf8_polish_ci NOT NULL,
-  `klucz` text COLLATE utf8_polish_ci NOT NULL,
-  `alt` text COLLATE utf8_polish_ci NOT NULL
+  `klucz` text COLLATE utf8_polish_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
 --
 -- Zrzut danych tabeli `zadania`
 --
 
-INSERT INTO `zadania` (`id`, `przedmiot_id`, `typ`, `tresc`, `klucz`, `alt`) VALUES
-(2, 12, 1, 'I # pizza.', 'like', '1'),
-(3, 12, 1, 'She # pasta.', 'likes', '2'),
-(7, 12, 1, 'We # eaten my breakfest.', 'have', '3'),
-(9, 12, 1, 'They live # London', 'in', '4'),
-(10, 12, 1, 'Where # you live?', 'do', '5'),
-(11, 12, 1, 'He # do it tomorrow.', 'will', '6'),
-(12, 12, 1, 'We live # Poznan.', 'in', '7');
+INSERT INTO `zadania` (`id`, `przedmiot_id`, `typ`, `tresc`, `klucz`) VALUES
+(2, 12, 1, 'I # pizza.', 'like'),
+(3, 12, 1, 'She # pasta.', 'likes'),
+(7, 12, 1, 'We # eaten my breakfest.', 'have'),
+(9, 12, 1, 'They live # London', 'in'),
+(10, 12, 1, 'Where # you live?', 'do'),
+(11, 12, 1, 'He # do it tomorrow.', 'will'),
+(12, 12, 1, 'We live # Poznan.', 'in'),
+(34, 12, 2, 'I * you.', ''),
+(35, 12, 2, 'What is color of the sun?', '');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `zadaniaabc`
+--
+
+CREATE TABLE `zadaniaabc` (
+  `id` int(11) NOT NULL,
+  `zadania_id` int(11) NOT NULL,
+  `pytanie` text NOT NULL,
+  `TF` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Zrzut danych tabeli `zadaniaabc`
+--
+
+INSERT INTO `zadaniaabc` (`id`, `zadania_id`, `pytanie`, `TF`) VALUES
+(63, 34, 'like', 1),
+(64, 34, 'seven', 0),
+(65, 34, 'hello', 0),
+(66, 35, 'green', 0),
+(67, 35, 'yellow', 1),
+(68, 35, 'black', 0),
+(69, 35, 'pink', 0);
 
 -- --------------------------------------------------------
 
@@ -259,14 +326,9 @@ CREATE TABLE `zajecia` (
 
 INSERT INTO `zajecia` (`id`, `nauczyciel_id`, `przedmiot_id`) VALUES
 (2, 3, 1),
-(3, 3, 11),
+(3, 4, 12),
 (4, 4, 1),
-(5, 4, 5),
-(6, 5, 1),
-(7, 5, 12),
-(8, 5, 13),
-(9, 5, 14),
-(10, 5, 15);
+(5, 5, 12);
 
 --
 -- Indeksy dla zrzutów tabel
@@ -294,6 +356,18 @@ ALTER TABLE `odczytane`
 -- Indeksy dla tabeli `ogloszeniazad`
 --
 ALTER TABLE `ogloszeniazad`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indeksy dla tabeli `paczkap`
+--
+ALTER TABLE `paczkap`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indeksy dla tabeli `paczkazad`
+--
+ALTER TABLE `paczkazad`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -333,6 +407,12 @@ ALTER TABLE `zadania`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeksy dla tabeli `zadaniaabc`
+--
+ALTER TABLE `zadaniaabc`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeksy dla tabeli `zajecia`
 --
 ALTER TABLE `zajecia`
@@ -358,19 +438,31 @@ ALTER TABLE `nauczyciele`
 -- AUTO_INCREMENT dla tabeli `odczytane`
 --
 ALTER TABLE `odczytane`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=300;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=301;
 
 --
 -- AUTO_INCREMENT dla tabeli `ogloszeniazad`
 --
 ALTER TABLE `ogloszeniazad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+
+--
+-- AUTO_INCREMENT dla tabeli `paczkap`
+--
+ALTER TABLE `paczkap`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT dla tabeli `paczkazad`
+--
+ALTER TABLE `paczkazad`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT dla tabeli `powiadomienia`
 --
 ALTER TABLE `powiadomienia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=198;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=199;
 
 --
 -- AUTO_INCREMENT dla tabeli `przedmioty`
@@ -400,7 +492,13 @@ ALTER TABLE `wykonanezadania`
 -- AUTO_INCREMENT dla tabeli `zadania`
 --
 ALTER TABLE `zadania`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+
+--
+-- AUTO_INCREMENT dla tabeli `zadaniaabc`
+--
+ALTER TABLE `zadaniaabc`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
 
 --
 -- AUTO_INCREMENT dla tabeli `zajecia`
