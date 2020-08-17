@@ -56,8 +56,135 @@
 				$anchor = "er2";
 			}
 			
-	} 
-	
+	} else if (isset($_POST['iloscPytan']) && isset($_POST['tekst'])) {
+		$anchor = "er4";
+		$iloscP =  $_POST['iloscPytan'];
+		$tekst = $_POST['tekst'];
+		if ($iloscP != "" || $tekst != "") {
+			if (ctype_digit($iloscP) == true) {
+				
+
+			} else {
+				$_SESSION['er_dodaj2'] = "Pole z ilością pytań musi składać się z samych znaków numerycznych!";
+				unset($_POST['tekst']);
+				unset($_POST['iloscPytan']);
+			}
+		} else {
+			$_SESSION['er_dodaj2'] = "Wypełnij wszystkie pola";
+			unset($_POST['tekst']);
+			unset($_POST['iloscPytan']);
+		}
+	} else if (isset($_POST['wroc'])) {
+		$anchor = "er4";
+		unset($_POST['tekst']);
+		unset($_POST['iloscPytan']);
+		unset($_POST['tekst2']);
+		unset($_POST['wroc']);
+	} else if (isset($_POST['tekst2']) && isset($_POST['utworz']) && isset($_POST['iloscPyt'])) {
+		$tekst2 = $_POST['tekst2'];
+		if ($tekst2 != "") {
+			$iloscP = $_POST['iloscPyt'];
+			$i = 0;
+			for ($i = 0; $i < $iloscP; $i++){
+				$pytanie = $_POST[$i];
+				if ($pytanie == "") {
+					$anchor = "er4"; 
+					$_SESSION['er_dodaj2'] = "Wypełnij wszystkie pola";
+					break;
+				}
+			}
+			if (!isset($_SESSION['er_dodaj2'])) {
+				require_once "dbconnect.php";
+				$conn = new mysqli($host, $user, $pass, $db);	
+				$tekst2 = $_POST['tekst2'];
+				$conn->query("INSERT INTO zadania VALUES(NULL, 12, 2, '$tekst2','')");
+		
+				$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 2");
+				while ($row = $result->fetch_assoc()) {
+					$zadId = $row['id'];
+					for ($i = 0; $i < $iloscP; $i++){
+						$pytanie = $_POST[$i];
+						if (!empty($_POST["n".$i])) {
+							$conn->query("INSERT INTO zadaniaabc VALUES(NULL,'$zadId', '$pytanie', 1)");
+						} else {
+							$conn->query("INSERT INTO zadaniaabc VALUES(NULL,'$zadId', '$pytanie', 0)");
+						}
+					}
+					$conn->close();	
+					unset($_POST['utworz']);
+					unset($_POST['iloscPyt']);
+					unset($_POST['tekst2']);
+					$_SESSION['utworzonoZad'] = "";
+
+					break;
+				}
+
+			}
+		} else {
+			$anchor = "er4";
+			$_SESSION['er_dodaj2'] = "Wypełnij wszystkie pola";
+		}
+
+	} else if (isset($_POST['sprawdz'])) {
+		if (isset($_POST['klasaPaczka'])) {
+				$klasa = $_POST['klasaPaczka'];
+				require_once "dbconnect.php";
+				$conn = new mysqli($host, $user, $pass, $db);	
+				$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 1");
+				$ilosc1 = $result->num_rows;
+				$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 2");
+				$ilosc2 = $result->num_rows;
+				$zaznaczone = 0;
+				for ($i = 1; $i<$ilosc1; $i++) {
+					if (!empty($_POST["a".$i])) {
+						$zaznaczone = 1;
+
+					} 
+				}
+				for ($i = 1; $i<$ilosc2; $i++) {
+					if (!empty($_POST["b".$i])) {
+						$zaznaczone = 1;
+					} 
+				}
+				if ($zaznaczone == 0) {
+					$anchor = "er5";
+				$_SESSION['er_paczka'] = "Musisz zaznaczyć chociaż jedno zadanie!";
+				}
+
+				if (!isset($_SESSION['er_paczka'])) {
+					$conn->query("INSERT INTO paczkazad VALUES(NULL,'$klasa')");
+					$result = $conn->query("SELECT * FROM paczkazad ORDER BY id DESC");
+					while ($row = $result->fetch_assoc()) {
+						$paczkaId = $row['id'];
+						break;
+					}
+					$resultZad =  $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 1");
+					$j = 1;
+					while ($rowZad = $resultZad->fetch_assoc()) {
+						if (!empty($_POST["a".$j])) {
+							$zadanieId = $rowZad['id'];
+							$conn->query("INSERT INTO paczkap VALUES(NULL, '$paczkaId', '$zadanieId')");
+						} 
+						$j++;
+					}
+					$resultZad =  $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 2");
+					$j = 1;
+					while ($rowZad = $resultZad->fetch_assoc()) {
+						if (!empty($_POST["b".$j])) {
+							$zadanieId = $rowZad['id'];
+							$conn->query("INSERT INTO paczkap VALUES(NULL, '$paczkaId', '$zadanieId')");
+						} 
+						$j++;
+					}
+					$_SESSION['utworzonoPaczke'] = "";
+				}
+		} else {
+			$anchor = "er5";
+			$_SESSION['er_paczka'] = "Wybierz klasę";
+		}
+		
+	}
+
 ?>
 <!DOCTYPE html>
 <html lang="pl">
@@ -106,6 +233,14 @@
 				var obj = document.getElementById("c1");
 				obj.style.display = 'block';
 				window.location.hash = "c1";
+			} else if ("er4" == "<?= $anchor; ?>") {
+				var obj = document.getElementById("x1");
+				obj.style.display = 'block';
+				window.location.hash = "x1";
+			} else if ("er5" == "<?= $anchor; ?>") {
+				var obj = document.getElementById("z1");
+				obj.style.display = 'block';
+				window.location.hash = "z1";
 			}
 		}
 		setTimeout(start,50);
@@ -133,6 +268,12 @@
 							echo "<h3 class='text-success font-weight-bold'>Ogłoszenie zostało wysłane!</h3><br>";
 						} else if (isset($_POST['rozwinOgloszenia'])) {
 							echo "<h3 class='text-success font-weight-bold'>Pomyślnie usunięto ogłoszenie!</h3><br>";
+						} else if (isset($_SESSION['utworzonoZad']) && !isset($_SESSION['er_dodaj2'])) {
+							echo "<h3 class='text-success font-weight-bold'>Zadanie zostało dodane pomyślnie!</h3><br>";
+							unset($_SESSION['utworzonoZad']);
+						} else if (isset($_SESSION['utworzonoPaczke'])) {
+							echo "<h3 class='text-success font-weight-bold'>Zadanie zostało dodane pomyślnie!</h3><br>";
+							unset($_SESSION['utworzonoPaczke']);
 						}
 					?>
 					
@@ -219,6 +360,25 @@
 
 					<br>
 					<h3>2. Uzupełnij lukę</h3>
+					
+					<button onclick="rozwin('d1')" class="dropdown-toggle w-75 btn-secondary">Dodaj zadanie</button><br>
+					<div id="d1" class="rozwin">
+						<br>
+						<form action="zadanieAng.php" method="post">
+							<label>Wpisz zdanie, słowo do uzupełnienia zastąp znakiem #<br><input type="text" name="zdanie"></label><br>
+							<label>Jakie słowo powinno być wstawione?<br><input type="text" name="klucz"></label><br>
+							<input type="hidden" name="action" value="zadanie">
+							<input type="submit" value="Dodaj">
+						</form>
+						<br>
+						<?php
+							if (isset($_SESSION['er_dodaj1'])) {
+								echo "<div class='error'>".$_SESSION['er_dodaj1']."</div><br>";
+								unset($_SESSION['er_dodaj1']);
+							}
+						?>
+								
+					</div>
 					<button onclick="rozwin('e1')" class="dropdown-toggle w-75 btn-secondary">Otwórz</button><br>
 					<div id="e1" class="rozwin">
 						<br>
@@ -240,29 +400,156 @@
 						
 						
 					</div>
-					<button onclick="rozwin('d1')" class="dropdown-toggle w-75 btn-secondary">Dodaj zadanie</button><br>
-					<div id="d1" class="rozwin">
-						<br>
-						<form action="zadanieAng.php" method="post" id="post2">
-							<label>Wpisz zdanie, słowo do uzupełnienia zastąp znakiem #<br><input type="text" name="zdanie"></label><br>
-							<label>Jakie słowo powinno być wstawione?<br><input type="text" name="klucz"></label><br>
-							<input type="hidden" name="action" value="zadanie">
-							<input type="submit" value="Dodaj">
-						</form>
+					<br>
+					<h3>3. Zadanie typu ABCD</h3>
+
+					<button onclick="rozwin('x1')" class="dropdown-toggle w-75 btn-secondary">Dodaj zadanie</button><br>
+					<div id="x1" class="rozwin">
+							<?php
+								if (!isset($_POST['tekst']) && !isset($_POST['iloscPytan']) && !isset($_POST['tekst2'])) {
+									echo "<br><form action='zadanieAng.php' method='post'>";
+									echo "Wklej tekst<br><textarea name='tekst' rows='6' class='w-75'></textarea><br>";
+									echo "Ile ma być pytań?<br><input type='text' name='iloscPytan'><br>";
+									echo "<br><input type='submit' value='Zatwierdź'>";
+									echo "</form><br>";
+								} else if (isset($_POST['tekst']) && isset($_POST['iloscPytan']) && !isset($_POST['tekst2'])) {
+									$tekst = $_POST['tekst'];
+									$iloscP = $_POST['iloscPytan'];
+									echo "<br><form action='zadanieAng.php' method='post'>";
+									echo "Wybrany tekst:<br><textarea name='tekst2' rows='6' class='w-75'>".$tekst."</textarea><br><br>";
+									echo "Wprowadź pytania oraz zaznacz poprawne odpowiedzi<br>";
+									for ($i = 0; $i < $iloscP; $i++) {
+										echo "<input type='text' name='$i'> <label><input type='checkbox' name='n$i'></label><br>";
+									}
+									echo "<input type='hidden' name='iloscPyt' value = '$iloscP'>";
+									echo "<br><input type='submit' name = 'wroc' value='Wróć'> <input type='submit' name = 'utworz' value='Utwórz zadanie'>";
+									echo "</form><br>";
+								} else if (!isset($_POST['tekst']) && !isset($_POST['iloscPytan']) && isset($_POST['tekst2'])) {
+									$tekst2 = $_POST['tekst2'];
+									$iloscP = $_POST['iloscPyt'];
+									echo "<br><form action='zadanieAng.php' method='post'>";
+									echo "Wybrany tekst:<br><textarea name='tekst2' rows='6' class='w-75'>".str_replace("\n", "<br>",$tekst2)."</textarea><br><br>";
+									echo "Wprowadź pytania oraz zaznacz poprawne odpowiedzi<br>";
+									for ($i = 0; $i < $iloscP; $i++) {
+										echo "<input type='text' name='$i'> <label><input type='checkbox' name='n$i'></label><br>";
+									}
+									echo "<input type='hidden' name='iloscPyt' value = '$iloscP'>";
+									echo "<br><input type='submit' name = 'wroc' value='Wróć'> <input type='submit' name = 'utworz' value='Utwórz zadanie'>";
+									echo "</form><br>";
+								} 
+
+								if (isset($_SESSION['er_dodaj2'])) {
+									echo "<div class='error'>".$_SESSION['er_dodaj2']."</div><br>";
+									unset($_SESSION['er_dodaj2']);
+									
+								}
+
+							?>	
+					</div>
+					<button onclick="rozwin('y1')" class="dropdown-toggle w-75 btn-secondary">Otwórz</button><br>
+					<div id="y1" class="rozwin">
 						<br>
 						<?php
-							if (isset($_SESSION['er_dodaj1'])) {
-								echo "<div class='error'>".$_SESSION['er_dodaj1']."</div><br>";
-								unset($_SESSION['er_dodaj1']);
-							}
-						?>
+							require_once "dbconnect.php";
+							$conn = new mysqli($host, $user, $pass, $db);
+							$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 2");
+
+							$i = 1;
+							
+							while ($row = $result->fetch_assoc()) {
+								$tekst = $row['tresc'];
+								$zadanieId = $row['id'];
+								echo "<b>".$i.".</b> Tekst: <br>".$tekst."<br><br> Pytania: <br>";
+								$resultZadabc = $conn->query("SELECT * FROM zadaniaabc WHERE zadania_id = '$zadanieId'");
+								$j = 833;
+								while ($rowZadabc = $resultZadabc->fetch_assoc()) {
+									$pytanie = $rowZadabc['pytanie'];
+									$prawda = $rowZadabc['TF'];
+									if ($prawda == '1') {
+										echo chr($j).") ".$pytanie.", T<br>";
+									} else {
+										echo chr($j).") ".$pytanie.", F<br>";	
+									}
+									$j++;
+								}
+								$i++;
+								echo "<br>";
 								
+							}
+							$conn->close();
+						?>
+						
+						
 					</div>
-					
-					<h3>3. Zrób cośtam innego</h3>
-					
-					<p class="text-left"><b>1. Uzupełnianie:</b><br>Przykład:	
-					</p>
+					<br>
+					<h3>3. Zadaj zadania</h3>
+
+					<button onclick="rozwin('z1')" class="dropdown-toggle w-75 btn-secondary">Stwórz paczkę z zadaniami</button><br>
+					<div id="z1" class="rozwin">
+						<br>
+						<form action='zadanieAng.php' method='post'>
+							<label for="klasa" id="klasa2">Wybierz klasę
+								<select name="klasaPaczka" id="klasa" >
+									<option selected="" disabled="">Wybierz klasę </option>
+									<?php
+											require_once "dbconnect.php";		
+											$conn =  new mysqli($host, $user, $pass, $db);	
+											$dane = explode(",", $_SESSION['zalogowany']);
+											$result = $conn->query("SELECT * FROM klasy");
+											
+											while ($row = $result->fetch_row()) {
+												echo "<option value='$row[0]'>$row[1]</option>";
+												
+											}
+											$conn->close();
+									?>																	
+								</select>
+							</label> 
+							<input type='hidden' name='sprawdz'>
+							<br>
+							<h4>Zaznacz zadania które chcesz dołączyć do paczki</h4>
+							<br>
+							Zadania "uzupełnij lukę"
+							<br>
+							<?php
+								require_once "dbconnect.php";		
+								$conn =  new mysqli($host, $user, $pass, $db);	
+								$result = $conn->query("SELECT * FROM zadania WHERE typ = '1' AND przedmiot_id = '12'");
+								$i = 1;
+								while ($row = $result->fetch_row()) {
+									echo "<b>".$i.".</b> <input type='checkbox' name='a$i'> ";
+									$i++;
+								}
+								$conn->close();
+							?>
+							<br>
+							Zadania "ABCD"
+							<br>
+							<?php
+								require_once "dbconnect.php";		
+								$conn =  new mysqli($host, $user, $pass, $db);	
+								$result = $conn->query("SELECT * FROM zadania WHERE typ = '2' AND przedmiot_id = '12'");
+								$i = 1;
+								while ($row = $result->fetch_row()) {
+									echo "<b>".$i.".</b> <input type='checkbox' name='b$i'> ";
+									$i++;
+								}
+								$conn->close();
+							?>
+							<br><br>
+							<input type="submit" value="Utwórz">
+							<br><br>
+
+							<?php
+							if (isset($_SESSION['er_paczka'])) {
+								echo "<div class='error'>".$_SESSION['er_paczka']."</div><br>";
+								unset($_SESSION['er_paczka']);
+							}
+							?>
+
+						</form>
+						<br>
+					</div>
 					<br><br>	
 				</div>	
 			</div>
