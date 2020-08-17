@@ -99,7 +99,7 @@
 				$tekst2 = $_POST['tekst2'];
 				$conn->query("INSERT INTO zadania VALUES(NULL, 12, 2, '$tekst2','')");
 		
-				$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 2");
+				$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 2 ORDER BY id DESC");
 				while ($row = $result->fetch_assoc()) {
 					$zadId = $row['id'];
 					for ($i = 0; $i < $iloscP; $i++){
