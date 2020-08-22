@@ -262,7 +262,7 @@
 							<br>
 							Napisz wiadomość<br>
 							<textarea name="wiadomosc" rows="6" class="w-75"></textarea><br>
-							<input type="submit" value="Wyślij">
+							<input type="submit" value="Wyślij" class="submitButton">
 						</form>
 						<br>
 						<?php

@@ -8,6 +8,24 @@
 		header('Location: index.php');
 		exit();
 	}
+    
+    function colorCards($termin) {
+        require "dbconnect.php";
+        $conn = new mysqli($host, $user, $pass, $db);
+        $result = $conn->query("SELECT COUNT(id) FROM paczkazad WHERE termin='$termin'");
+        if (($result->fetch_row())[0] > 0)
+            echo " text-warning";
+        $conn->close();
+    }
+    
+    if (isset($_POST['usun'])) {
+        $id = $_POST['usun'];
+        require_once "dbconnect.php";
+        $conn = new mysqli($host, $user, $pass, $db);
+        $conn->query("DELETE FROM paczkazad WHERE id='$id'");
+        $conn->close();
+        $_SESSION['usun'] = "letMeTellTheUserThatEverythingIsOK";
+    }
 
 
 ?>
@@ -71,16 +89,22 @@
     echo "<div class='row mx-md-auto display-inline-block pl-lg-5'>";
     for($i = 0; $i < 6; $i++) {
         for($j = 1; $j <= 7; $j++) {
-
             echo "<div class='col-sm-1 ml-md-3 m-sm-1 m-lg-3 card";
             $id = $i*7 + $j - $offset;
             if($id <= $date->format('t') && $id > 0) {
                 if($id == $date->format('j') && $date->format('j.m.Y') == (new DateTime())->format('j.m.Y')) {
-                    echo " bg-white text-dark'";
+                    echo " bg-white text-warning";
+                } else {
+                    echo " bg-dark";
+                    if ($id%7 + $offset == 6 || $id%7 + $offset == 7)
+                        echo " text-secondary";
                 }
-                else
-                    echo " bg-dark'";
-                echo " id='".$id."'><h4><a href='terminarz.php?m=".$month."&d=".$id."'>".$id."</a></h4></div>";
+                $day = $id;
+                $mon = $date->format('m');
+                $year = $date->format('Y');
+                $termin = new DateTime("$day.$mon.$year");
+                colorCards($termin->format('Y.m.d'));
+                echo "' id='".$id."'><h4><a href='terminarz.php?m=".$month."&d=".$id."' style='color: inherit;'>".$id."</a></h4></div>";
             } else
                 echo " bg-secondary'></div>";
         }
@@ -96,40 +120,82 @@
                     <h3 class="text-right"><a href="terminarz.php<?php echo "?m=".$month; ?>" class='text-warning'>X</a></h3>
 <?php
 
-    $day = $_GET['d'];
-    $month = $date->format('m');
-    $year = $date->format('Y');
-    $sideDate = new datetime("$day.$month.$year");
-    echo "<h4>".$sideDate->format('d.m.Y')."</h4><hr style='height: 5px; background: #373a3d; border: 0px;'>";
-
-    require_once "dbconnect.php";
-    $conn = new mysqli($host, $user, $pass, $db);
-    $sideDateFormat = $sideDate->format('Y.m.d');
-    $result = $conn->query("SELECT * FROM paczkazad WHERE termin='$sideDateFormat'");
-    $i = 0;
-    $napisTesty = "";
-    while($row = $result->fetch_row())
-	{
-		if ($napisTesty == "") {
-            echo "<h4>Testy:</h4>";
-            $napisTesty = "Testy";
+    if (isset($_GET['d'])) {
+        if (isset($_SESSION['usun'])) {
+            echo "<h4 class='text-success font-weight-bold'>Test usunięty!</h4>";
+            unset($_SESSION['usun']);
         }
-        $resultKl = $conn->query("SELECT nazwa FROM klasy WHERE id=$row[1]");
-        $nazwaKlasy = ($resultKl->fetch_assoc())['nazwa'];
-        echo "<b><h5 class='text-left'>".++$i.".</h5>Klasa: ".$nazwaKlasy."<br />";
         
-        $zad = $conn->query("SELECT zadania_id FROM paczkap WHERE paczkazad_id=$row[0] LIMIT 1");
-        $zad = $zad->fetch_row();
-        $przedmiot = $conn->query("SELECT przedmiot_id FROM zadania WHERE id=$zad[0]");
-        $przedmiot = $przedmiot->fetch_row();
-        $przedmiotNazwa = $conn->query("SELECT nazwa FROM przedmioty WHERE id=$przedmiot[0]");
-        $przedmiotNazwa = $przedmiotNazwa->fetch_row();
-        echo "Przedmiot: ".$przedmiotNazwa[0]."</b>";
+        $day = $_GET['d'];
+        $mon = $date->format('m');
+        $year = $date->format('Y');
+        $sideDate = new datetime("$day.$mon.$year");
+        echo "<h4>".$sideDate->format('d.m.Y')."</h4><hr style='height: 5px; background: #373a3d; border: 0px;'>";
 
-        // $resultZad= $conn->query("SELECT * FROM paczkap WHERE paczkazad_id=$row[0] COUNT"):
-        // echo "Ilość zadań: ";
-	}
-    $conn->close();
+        require "dbconnect.php";
+        $conn = new mysqli($host, $user, $pass, $db);
+        $sideDateFormat = $sideDate->format('Y.m.d');
+        $result = $conn->query("SELECT * FROM paczkazad WHERE termin='$sideDateFormat'");
+        $i = 0;
+        $napisTesty = "";
+        while($row = $result->fetch_row())
+        {
+            if ($napisTesty == "") {
+                echo "<h4>Testy:</h4>";
+                $napisTesty = "Testy";
+            }
+            $resultKl = $conn->query("SELECT * FROM klasy WHERE id=$row[1]");
+            $resultKl = $resultKl->fetch_assoc();
+
+            $zad = $conn->query("SELECT zadania_id FROM paczkap WHERE paczkazad_id=$row[0] LIMIT 1");
+            $zad = $zad->fetch_row();
+            $przedmiotId = $conn->query("SELECT przedmiot_id FROM zadania WHERE id=$zad[0]");
+            $przedmiotId = ($przedmiotId->fetch_row())[0];
+            $przedmiot = $conn->query("SELECT * FROM przedmioty WHERE id=$przedmiotId");
+            $przedmiot = $przedmiot->fetch_row();
+            $resultZad = $conn->query("SELECT COUNT(id) FROM paczkap WHERE paczkazad_id=$row[0]");
+            
+            $moje = 0;;
+            $dane = explode(',', $_SESSION['zalogowany'], 3);
+            if ($dane[0] == "n") {
+                $moje = $conn->query("SELECT COUNT(id) FROM zajecia WHERE nauczyciel_id='$dane[1]' AND przedmiot_id='$przedmiot[0]'");
+                $moje = ($moje->fetch_row())[0];
+                if ($moje > 0) {
+                    echo "<b>";
+                    $moje = -1;
+                }
+            } else {
+                $moje = $conn->query("SELECT klasa_id FROM uczniowie WHERE id='$dane[1]'");
+                $moje = ($moje->fetch_row())[0];
+                if ($moje == $resultKl['id']) {
+                    echo "<b>";
+                    $moje = -1;
+                }
+            }
+            echo "<h5 class='text-left'>".++$i.".</h5>Klasa: ".$resultKl['nazwa']."<br />";
+
+            echo "Przedmiot: ".$przedmiot[1]."<br />";
+
+            echo "Ilość zadań: ".($resultZad->fetch_row())[0]."<br />";
+
+            if ($moje == -1)
+                echo "</b>";
+
+            if ($sideDate->format('d') >= $date->format('d') && $moje == -1) {
+                if ($dane[0] == 'u') {
+                    // CZY JUZ NIE ROZWIAZAL?
+                    echo    '<form method="post" action="test.php" target="_blank">
+                                    <input type="submit" value="Rozwiąż" class="submitButton">
+                                </form>';
+                } else {
+                    echo    '<form method="post">
+                                    <input type="hidden" value="'.$row[0].'" name="usun"><input type="submit" value="Usuń" class="submitButton">
+                                </form>';
+                }
+            }
+        }
+        $conn->close();
+    }
 
 ?>
 
@@ -162,6 +228,8 @@
 
         let aside = <?php if (isset($_GET['d'])) {echo $_GET['d'];} else {echo "0";} ?>;
         tog(aside.toString());
+        
+        
 
     </script>
 	

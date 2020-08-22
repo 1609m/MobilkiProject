@@ -97,7 +97,7 @@
 echo<<<END
 		</select>
 		</label>
-		<input type="submit" value="Wyświetl uczniów">
+		<input type="submit" value="Wyświetl uczniów" class="submitButton">
 	</form>
 END;
 
@@ -133,7 +133,7 @@ echo<<<END
 	<form action="klasy.php" method="post">
 		
 		<label>Dodaj nową klasę: <input type="text" name="nowaKlasa" size="10" placeholder=" nazwa klasy"></label>
-		<input type="submit" value="Dodaj!">
+		<input type="submit" value="Dodaj!" class="submitButton">
 		
 	</form>
 	

@@ -69,7 +69,7 @@
 	}
 ?>
 						<br>
-						<input type="submit" value="Zaloguj"><br><br>
+						<input type="submit" value="Zaloguj" class="submitButton"><br><br>
 						<div class="obrazek d-none d-lg-block">
 							<br><br><br>
 							<img src="img/ludzik.png" alt="zainteresowany ludzik" id="ludzik">
@@ -194,7 +194,7 @@
 	}
 ?>
 						
-						<input type="submit" value="Zarejestruj się"><br><br>
+						<input type="submit" value="Zarejestruj się" class="submitButton"><br><br>
 						
 						
 						

@@ -127,4 +127,9 @@ table#tabelaKlas
 	height: 80px;
 }
 
+.submitButton
+{
+    background-color: #b72;
+    color: white;
+}
 

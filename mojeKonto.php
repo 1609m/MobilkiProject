@@ -149,7 +149,7 @@
 ?>
 							</div>
 							<br>
-							<input type="submit" value="Zmień hasło!"><br><br>
+							<input type="submit" value="Zmień hasło!" class="submitButton"><br><br>
 							
 						</form>
 					

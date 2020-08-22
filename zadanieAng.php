@@ -152,7 +152,7 @@
 				}
 
 				if (!isset($_SESSION['er_paczka'])) {
-					$conn->query("INSERT INTO paczkazad VALUES(NULL,'$klasa')");
+					$conn->query("INSERT INTO paczkazad VALUES(NULL,'$klasa','2020-08-30')");
 					$result = $conn->query("SELECT * FROM paczkazad ORDER BY id DESC");
 					while ($row = $result->fetch_assoc()) {
 						$paczkaId = $row['id'];
@@ -304,7 +304,7 @@
 							Napisz wiadomość<br>
 							<textarea name="wiadomosc" rows="6" class="w-75"></textarea><br>
 							<input type="hidden" name="action" value="ogloszenie">
-							<input type="submit" value="Wyślij">
+							<input type="submit" value="Wyślij" class="submitButton">
 						</form>
 						<br>
 						<?php
@@ -348,7 +348,7 @@
 										if ($j>1) {
 											echo "<hr style='height: 5px; background: #373a3d; border: 0px;'>";
 										}
-										echo "Klasa: ".$rowKlasa['nazwa']."<br><br>Wiadomość: <br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br><input type='hidden' name='rozwinOgloszenia'><input name='$i' type='submit' value='Usuń ogłoszenie'>";
+										echo "Klasa: ".$rowKlasa['nazwa']."<br><br>Wiadomość: <br>".str_replace("\n", "<br>",$row['wiadomosc'])."<br><br><input type='hidden' name='rozwinOgloszenia'><input name='$i' type='submit' value='Usuń ogłoszenie' class='submitButton'>";
 										$j++;
 									}
 												
@@ -368,7 +368,7 @@
 							<label>Wpisz zdanie, słowo do uzupełnienia zastąp znakiem #<br><input type="text" name="zdanie"></label><br>
 							<label>Jakie słowo powinno być wstawione?<br><input type="text" name="klucz"></label><br>
 							<input type="hidden" name="action" value="zadanie">
-							<input type="submit" value="Dodaj">
+							<input type="submit" value="Dodaj" class="submitButton">
 						</form>
 						<br>
 						<?php
@@ -410,7 +410,7 @@
 									echo "<br><form action='zadanieAng.php' method='post'>";
 									echo "Wklej tekst<br><textarea name='tekst' rows='6' class='w-75'></textarea><br>";
 									echo "Ile ma być pytań?<br><input type='text' name='iloscPytan'><br>";
-									echo "<br><input type='submit' value='Zatwierdź'>";
+									echo "<br><input type='submit' value='Zatwierdź' class='submitButton'>";
 									echo "</form><br>";
 								} else if (isset($_POST['tekst']) && isset($_POST['iloscPytan']) && !isset($_POST['tekst2'])) {
 									$tekst = $_POST['tekst'];
@@ -422,7 +422,7 @@
 										echo "<input type='text' name='$i'> <label><input type='checkbox' name='n$i'></label><br>";
 									}
 									echo "<input type='hidden' name='iloscPyt' value = '$iloscP'>";
-									echo "<br><input type='submit' name = 'wroc' value='Wróć'> <input type='submit' name = 'utworz' value='Utwórz zadanie'>";
+									echo "<br><input type='submit' name = 'wroc' value='Wróć' class='submitButton'> <input type='submit' name = 'utworz' value='Utwórz zadanie' class='submitButton'>";
 									echo "</form><br>";
 								} else if (!isset($_POST['tekst']) && !isset($_POST['iloscPytan']) && isset($_POST['tekst2'])) {
 									$tekst2 = $_POST['tekst2'];
@@ -434,7 +434,7 @@
 										echo "<input type='text' name='$i'> <label><input type='checkbox' name='n$i'></label><br>";
 									}
 									echo "<input type='hidden' name='iloscPyt' value = '$iloscP'>";
-									echo "<br><input type='submit' name = 'wroc' value='Wróć'> <input type='submit' name = 'utworz' value='Utwórz zadanie'>";
+									echo "<br><input type='submit' name = 'wroc' value='Wróć' class='submitButton'> <input type='submit' name = 'utworz' value='Utwórz zadanie' class='submitButton'>";
 									echo "</form><br>";
 								} 
 
@@ -537,7 +537,7 @@
 								$conn->close();
 							?>
 							<br><br>
-							<input type="submit" value="Utwórz">
+							<input type="submit" value="Utwórz" class="submitButton">
 							<br><br>
 
 							<?php
