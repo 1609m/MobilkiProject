@@ -125,6 +125,9 @@
         $przedmiotNazwa = $conn->query("SELECT nazwa FROM przedmioty WHERE id=$przedmiot[0]");
         $przedmiotNazwa = $przedmiotNazwa->fetch_row();
         echo "Przedmiot: ".$przedmiotNazwa[0]."</b>";
+
+        // $resultZad= $conn->query("SELECT * FROM paczkap WHERE paczkazad_id=$row[0] COUNT"):
+        // echo "Ilość zadań: ";
 	}
     $conn->close();
 
