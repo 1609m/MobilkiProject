@@ -23,6 +23,7 @@
         require_once "dbconnect.php";
         $conn = new mysqli($host, $user, $pass, $db);
         $conn->query("DELETE FROM paczkazad WHERE id='$id'");
+        $conn->query("DELETE FROM paczkap WHERE paczkazad_id='$id'");
         $conn->close();
         $_SESSION['usun'] = "letMeTellTheUserThatEverythingIsOK";
     }
@@ -153,6 +154,7 @@
             $przedmiotId = ($przedmiotId->fetch_row())[0];
             $przedmiot = $conn->query("SELECT * FROM przedmioty WHERE id=$przedmiotId");
             $przedmiot = $przedmiot->fetch_row();
+            
             $resultZad = $conn->query("SELECT COUNT(id) FROM paczkap WHERE paczkazad_id=$row[0]");
             
             $moje = 0;;
@@ -185,11 +187,14 @@
                 if ($dane[0] == 'u') {
                     // CZY JUZ NIE ROZWIAZAL?
                     echo    '<form method="post" action="test.php" target="_blank">
+                                    <input type="hidden" value="'.$przedmiot[1].'" name="nazwaPrzedmiotu">
+                                    <input type="hidden" value="'.$row[0].'" name="testId">
                                     <input type="submit" value="Rozwiąż" class="submitButton">
                                 </form>';
-                } else {
+                } else {// PODGLĄD DLA NAUCZYCIELA
                     echo    '<form method="post">
-                                    <input type="hidden" value="'.$row[0].'" name="usun"><input type="submit" value="Usuń" class="submitButton">
+                                    <input type="hidden" value="'.$row[0].'" name="usun">
+                                    <input type="submit" value="Usuń" class="submitButton">
                                 </form>';
                 }
             }

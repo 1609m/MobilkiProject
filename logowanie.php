@@ -1,3 +1,10 @@
+<?php
+	session_start();
+    if (isset($_SESSION['zalogowany'])) {
+		header('Location: index.php');
+		exit();
+	}
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -45,7 +52,7 @@
 
 <body>
 	
-	<?php session_start(); $active = "logowanie"; require "header.php";	?>
+	<?php $active = "logowanie"; require "header.php";	?>
 	
 	<main>
 		<div class="container">

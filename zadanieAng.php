@@ -389,10 +389,9 @@
 							$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 12 AND typ = 1");
 							$i = 0;
 							while ($row = $result->fetch_assoc()) {
-								$zdanie = explode("#", $row['tresc'],2);
+								$zdanie = explode("#", $row['tresc'], 2);
 								$uzupelnij = $row['klucz'];
-								$i++;
-								echo "<b>".$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' value='$uzupelnij'>".$zdanie[1]."<br>[Słowo do uzupełnienia: ".$row['klucz']."]<br><a href='#' class='text-warning'>Zadaj!</a><br><br>";
+								echo "<b>".++$i.".</b> ".$zdanie[0]."<input type='text' size='10' style='text-align: center;' value='$uzupelnij'>".$zdanie[1]."<br>[Słowo do uzupełnienia: ".$row['klucz']."]<br><br>";
 								
 							}
 							$conn->close();
