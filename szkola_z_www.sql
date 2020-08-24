@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 16 Sie 2020, 23:04
+-- Czas generowania: 24 Sie 2020, 19:48
 -- Wersja serwera: 10.4.13-MariaDB
--- Wersja PHP: 7.4.7
+-- Wersja PHP: 7.4.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -92,6 +92,13 @@ CREATE TABLE `ogloszeniazad` (
   `wiadomosc` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Zrzut danych tabeli `ogloszeniazad`
+--
+
+INSERT INTO `ogloszeniazad` (`id`, `nauczyciel_id`, `klasa_id`, `przedmiot_id`, `wiadomosc`) VALUES
+(61, 4, 1, 12, 'qwerty');
+
 -- --------------------------------------------------------
 
 --
@@ -111,7 +118,17 @@ CREATE TABLE `paczkap` (
 INSERT INTO `paczkap` (`id`, `paczkazad_id`, `zadania_id`) VALUES
 (8, 9, 2),
 (9, 9, 7),
-(10, 9, 35);
+(10, 9, 35),
+(11, 10, 2),
+(12, 10, 3),
+(13, 10, 12),
+(14, 10, 34),
+(15, 10, 35),
+(36, 18, 2),
+(37, 18, 3),
+(38, 18, 34),
+(39, 18, 35),
+(41, 18, 37);
 
 -- --------------------------------------------------------
 
@@ -121,15 +138,18 @@ INSERT INTO `paczkap` (`id`, `paczkazad_id`, `zadania_id`) VALUES
 
 CREATE TABLE `paczkazad` (
   `id` int(11) NOT NULL,
-  `klasa_id` int(11) NOT NULL
+  `klasa_id` int(11) NOT NULL,
+  `termin` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Zrzut danych tabeli `paczkazad`
 --
 
-INSERT INTO `paczkazad` (`id`, `klasa_id`) VALUES
-(9, 1);
+INSERT INTO `paczkazad` (`id`, `klasa_id`, `termin`) VALUES
+(9, 1, '2020-08-21'),
+(10, 1, '2020-08-22'),
+(18, 3, '2020-08-30');
 
 -- --------------------------------------------------------
 
@@ -256,6 +276,19 @@ INSERT INTO `wykonanezadania` (`id`, `uczen_id`, `zadanieAng_id`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Struktura tabeli dla tabeli `wyniki`
+--
+
+CREATE TABLE `wyniki` (
+  `id` int(11) NOT NULL,
+  `uczen_id` int(11) NOT NULL,
+  `paczkazad_id` int(11) NOT NULL,
+  `wynik` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Struktura tabeli dla tabeli `zadania`
 --
 
@@ -280,7 +313,8 @@ INSERT INTO `zadania` (`id`, `przedmiot_id`, `typ`, `tresc`, `klucz`) VALUES
 (11, 12, 1, 'He # do it tomorrow.', 'will'),
 (12, 12, 1, 'We live # Poznan.', 'in'),
 (34, 12, 2, 'I * you.', ''),
-(35, 12, 2, 'What is color of the sun?', '');
+(35, 12, 2, 'What is color of the sun?', ''),
+(37, 12, 2, 'She * late at school yesterday.', '');
 
 -- --------------------------------------------------------
 
@@ -306,7 +340,10 @@ INSERT INTO `zadaniaabc` (`id`, `zadania_id`, `pytanie`, `TF`) VALUES
 (66, 35, 'green', 0),
 (67, 35, 'yellow', 1),
 (68, 35, 'black', 0),
-(69, 35, 'pink', 0);
+(69, 35, 'pink', 0),
+(75, 37, 'is', 0),
+(76, 37, 'has', 0),
+(77, 37, 'was', 0);
 
 -- --------------------------------------------------------
 
@@ -401,6 +438,12 @@ ALTER TABLE `wykonanezadania`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indeksy dla tabeli `wyniki`
+--
+ALTER TABLE `wyniki`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indeksy dla tabeli `zadania`
 --
 ALTER TABLE `zadania`
@@ -444,19 +487,19 @@ ALTER TABLE `odczytane`
 -- AUTO_INCREMENT dla tabeli `ogloszeniazad`
 --
 ALTER TABLE `ogloszeniazad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT dla tabeli `paczkap`
 --
 ALTER TABLE `paczkap`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
 -- AUTO_INCREMENT dla tabeli `paczkazad`
 --
 ALTER TABLE `paczkazad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT dla tabeli `powiadomienia`
@@ -489,16 +532,22 @@ ALTER TABLE `wykonanezadania`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
+-- AUTO_INCREMENT dla tabeli `wyniki`
+--
+ALTER TABLE `wyniki`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT dla tabeli `zadania`
 --
 ALTER TABLE `zadania`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT dla tabeli `zadaniaabc`
 --
 ALTER TABLE `zadaniaabc`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT dla tabeli `zajecia`
