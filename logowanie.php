@@ -1,3 +1,10 @@
+<?php
+	session_start();
+    if (isset($_SESSION['zalogowany'])) {
+		header('Location: index.php');
+		exit();
+	}
+?>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -45,7 +52,7 @@
 
 <body>
 	
-	<?php session_start(); $active = "logowanie"; require "header.php";	?>
+	<?php $active = "logowanie"; require "header.php";	?>
 	
 	<main>
 		<div class="container">
@@ -69,7 +76,7 @@
 	}
 ?>
 						<br>
-						<input type="submit" value="Zaloguj"><br><br>
+						<input type="submit" value="Zaloguj" class="submitButton"><br><br>
 						<div class="obrazek d-none d-lg-block">
 							<br><br><br>
 							<img src="img/ludzik.png" alt="zainteresowany ludzik" id="ludzik">
@@ -194,7 +201,7 @@
 	}
 ?>
 						
-						<input type="submit" value="Zarejestruj się"><br><br>
+						<input type="submit" value="Zarejestruj się" class="submitButton"><br><br>
 						
 						
 						

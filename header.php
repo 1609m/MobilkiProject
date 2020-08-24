@@ -8,7 +8,6 @@
 			
 			<a href="index.php" class="navbar-brand">
 				<img src="img/logo4t.png" width="90" height="90" class="d-inline-block align-middle" alt="Szkoła z WWW">
-				<!--<p style="text-align: center; font-size: 14px;;">GŁÓWNA</p>-->
 			</a>
 			
 			<div class="mr-auto">
@@ -26,20 +25,6 @@
 						<!--  KLASY  -->
 						<li class="m-1 list-inline-item"><a href="klasy.php" class="list-group-item list-group-item-dark list-group-item-action klasy d-none">KLASY</a>
 						</li>
-						
-						<!-- PRZEDMIOTY  -->
-						<li class="m-1 list-inline-item przedmioty d-none"><div class="dropdown w-100">
-							
-							<a href="#" class="dropbtn dropdown-toggle list-group-item list-group-item-dark list-group-item-action p_mat p_ang">PRZEDMIOTY</a>
-							
-							<div class="dropdown-content">
-							
-								<a href="#" class="subnav list-group-item list-group-item-dark list-group-item-action p_mat">MATEMETYKA</a>
-								<a href="#" class="subnav list-group-item list-group-item-dark list-group-item-action p_ang">J. ANGIELSKI</a>
-								
-							 </div>
-							 
-						</div></li>
 						
 						<!--  ZADANIA  -->
 						<li class="m-1 list-inline-item zadania d-none"><div class="dropdown w-100">
@@ -101,7 +86,6 @@
 		{
 			$('.mojeKonto').removeClass('d-none');
 			$('.terminarz').removeClass('d-none');
-			$('.przedmioty').removeClass('d-none');
 			$('.zadania').removeClass('d-none');
 			$('.z_zadane').addClass('d-none');
 			$('.z_ang').addClass('d-none');
