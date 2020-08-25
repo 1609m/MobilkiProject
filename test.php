@@ -13,15 +13,44 @@
     if (isset($_POST['zakoncz'])) {
         $i = 1;
         $wynik = 0;
+        $podWynik = array("plus" => 0, "minus" => 0);
+        $ile = array("plus" => 0, "minus" => 0);
         // ANGIELSKI
         while (isset($_SESSION['odp'][$i])) {
-            echo $i.". ".$_SESSION['odp'][$i]."<br />";
+            // echo $i.". ".$_SESSION['odp'][$i]."<br />";
             $odpowiedzi = explode(",", $_SESSION['odp'][$i]);
-            if ($odpowiedzi[0] == 1) {
-                if ($odpowiedzi[1] == $_POST["$i"])
-                    echo "good";
+            
+            if ($odpowiedzi[0] == 0) { // zerowanie typu 2
+                $plus = $ile["plus"] > 0 ? $podWynik["plus"] / $ile["plus"] : 0;
+                $minus = $ile["minus"] > 0 ? $podWynik["minus"] / $ile["minus"] : 0;
+                $wynik += $plus - $minus > 0 ? $plus - $minus : 0;
+                $podWynik["plus"] = 0;
+                $podWynik["minus"] = 0;
+                $ile["plus"] = 0;
+                $ile["minus"] = 0;
+                echo "00000000000-";
+            } else if ($odpowiedzi[0] == 1) { // typ 1
+                if ($odpowiedzi[1] == $_POST["$i"]) {
+                    $wynik++;
+                }
+            } else if ($odpowiedzi[0] == 2) { // typ 2
+                if (isset($_POST["$odpowiedzi[1]"])) {
+                    $gdzie = "minus";
+                    if ($odpowiedzi[2] == "1") {
+                        $gdzie = "plus";
+                    }
+                    $podWynik["$gdzie"]++;
+                    $ile["$gdzie"]++;
+                } else {
+                    $gdzie = "minus";
+                    if ($odpowiedzi[2] == "1") {
+                        $gdzie = "plus";
+                    }
+                    $ile["$gdzie"]++;
+                }
             }
             $i++;
+            echo $wynik."<br />";
         }
     }
 ?>
@@ -93,6 +122,7 @@
                     array_push($_SESSION['odp'], $tmp);
                 } else if ($zad['typ'] == 2) {
                     echo "<b>".++$i.". ".$zad['tresc']."</b><br />";
+                    
                     $id = $zad['id'];
                     $odp = $conn->query("SELECT * FROM zadaniaabc WHERE zadania_id='$id'");
                     while ($odpRow = $odp->fetch_assoc()) {
