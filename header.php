@@ -29,7 +29,7 @@
 						<!--  ZADANIA  -->
 						<li class="m-1 list-inline-item zadania d-none"><div class="dropdown w-100">
 							
-							<a href="#" class="dropbtn dropdown-toggle list-group-item list-group-item-dark list-group-item-action z_zadane z_doZrobienia z_mat z_ang z_angU">ZADANIA</a>
+							<a href="#" class="dropbtn dropdown-toggle list-group-item list-group-item-dark list-group-item-action z_zadane z_doZrobienia z_mat z_matU z_ang z_angU">ZADANIA</a>
 							
 							<div class="dropdown-content">
 								
@@ -40,6 +40,8 @@
 								<a href="#" class="subnav list-group-item list-group-item-dark list-group-item-action z_doZrobienia">DO ZROBIENIA</a>
 								
 								<a href="zadanieMat.php" class="subnav list-group-item list-group-item-dark list-group-item-action z_mat">MATEMETYKA</a>
+
+								<a href="zadanieMatU.php" class="subnav list-group-item list-group-item-dark list-group-item-action z_matU">MATEMETYKA</a>
 								
 								<a href="zadanieAng.php" class="subnav list-group-item list-group-item-dark list-group-item-action z_ang">J. ANGIELSKI</a>
 
@@ -89,6 +91,7 @@
 			$('.zadania').removeClass('d-none');
 			$('.z_zadane').addClass('d-none');
 			$('.z_ang').addClass('d-none');
+			$('.z_mat').addClass('d-none');
 			$('.powiadomieniaU').removeClass('d-none');
 			$('.wyloguj').removeClass('d-none');
 		}
@@ -100,6 +103,7 @@
 			$('.mojeKonto').removeClass('d-none');
 			$('.z_doZrobienia').addClass('d-none');
 			$('.z_angU').addClass('d-none');
+			$('.z_matU').addClass('d-none');
 			$('.powiadomienia').removeClass('d-none');
 			$('.wyloguj').removeClass('d-none');
 		}

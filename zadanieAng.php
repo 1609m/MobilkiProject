@@ -23,7 +23,7 @@
 				}
 				
 				if ($juzJest == false) {
-					$conn->query("INSERT INTO zadania VALUES(NULL,12,1,'$zdanie','$klucz','')");
+					$conn->query("INSERT INTO zadania VALUES(NULL,12,1,'$zdanie','$klucz')");
 				} else {
 					$_SESSION['er_dodaj1'] = "Takie  zadanie już istnieje.";
 					$anchor = "er1";
@@ -85,7 +85,11 @@
 		if ($tekst2 != "") {
 			$iloscP = $_POST['iloscPyt'];
 			$i = 0;
+			$jestT = false;
 			for ($i = 0; $i < $iloscP; $i++){
+				if (!empty($_POST["n".$i])) {
+					$jestT = true;
+				}
 				$pytanie = $_POST[$i];
 				if ($pytanie == "") {
 					$anchor = "er4"; 
@@ -93,7 +97,8 @@
 					break;
 				}
 			}
-			if (!isset($_SESSION['er_dodaj2'])) {
+
+			if (!isset($_SESSION['er_dodaj2']) && $jestT) {
 				require_once "dbconnect.php";
 				$conn = new mysqli($host, $user, $pass, $db);	
 				$tekst2 = $_POST['tekst2'];
@@ -119,6 +124,9 @@
 					break;
 				}
 
+			} else {
+				$anchor = "er4";
+				$_SESSION['er_dodaj2'] = "Musisz zaznaczyć chociaż jedno pole jako T";
 			}
 		} else {
 			$anchor = "er4";
