@@ -142,10 +142,16 @@
         while ($row = $result->fetch_row()) {
             $zad = $conn->query("SELECT * FROM zadania WHERE id='$row[0]'")->fetch_assoc();
             
-            if ($zad['przedmiot_id'] == 12) {
+            if ($zad['przedmiot_id'] == 12 || 'innyPrzedmiot' == 'innyPrzedmiot') {
                 if ($zad['typ'] == 1) {
                     $zdanie = explode("#", $zad['tresc'], 2);
-                    echo "<b>".++$i.". Uzupełnij lukę:</b><br /> ".$zdanie[0]."<input type='text' size='10' name='".$i."' style='text-align: center;'>".$zdanie[1]."<br /><br />";
+                    echo "<b>".++$i.". Uzupełnij lukę:</b><br /> ".$zdanie[0];
+                    
+                    if ($zad['przedmiot_id'] == 12) {
+                        echo "<input type='text' size='10' name='".$i."' style='text-align: center;'>".$zdanie[1]."<br /><br />";
+                    } else if ($zad['przedmiot_id'] == 1) {
+                        echo "<br /><input type='text' size='10' name='".$i."' style='text-align: center;'><br /><br />";
+                    }
                     $tmp = "1,".$zad['klucz'];
                     array_push($_SESSION['odp'], $tmp);
                 } else if ($zad['typ'] == 2) {

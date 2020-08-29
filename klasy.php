@@ -109,20 +109,27 @@ END;
 		$row = $result->fetch_row();
 		echo "<b><h3>".$row[0]."</h3></b>";
 		
-		$result = $conn->query("SELECT imie, nazwisko, klasa_id FROM uczniowie WHERE klasa_id='$klasa'");
+		$result = $conn->query("SELECT * FROM uczniowie WHERE klasa_id='$klasa'");
 		
 echo<<<END
 	<table id="tabelaKlas">
 		<thead>
 			<tr>
-				<th>Lp</th><th>Imię</th> <th>Nazwisko</th> <th>Wykonane zadania</th>
+				<th>Lp</th><th>Imię</th> <th>Nazwisko</th> <th>Średnia wyników</th>
 			</tr>
 		</thead>
 		<tbody>
 END;
 		for($i = 1; $row = $result->fetch_assoc(); $i++) 
 		{
-			echo "<tr><td>$i</td><td>".$row['imie']."</td><td>".$row['nazwisko']."</td><td>-</td></tr>";
+            $id = $row['id'];
+            $resultSrednia = $conn->query("SELECT wynik FROM wyniki WHERE uczen_id='$id'");
+            $srednia = 0;
+            while ($rowSrednia = $resultSrednia->fetch_row()) {
+                $srednia += $rowSrednia[0];
+            }
+            $srednia = $resultSrednia->num_rows > 0 ? $srednia / $resultSrednia->num_rows : "Brak";
+			echo "<tr><td>$i</td><td>".$row['imie']."</td><td>".$row['nazwisko']."</td><td>".$srednia."</td></tr>";
 		}
 		echo "</tbody></table>";
 		
