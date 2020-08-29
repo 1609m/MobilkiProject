@@ -4,24 +4,66 @@
     if (!isset($_SESSION['zalogowany'])) {
 		header('Location: logowanie.php');
 		exit();
-	}
-    /*if (!isset($_POST['testId'])) {
-		header('Location: index.php');
+    }
+    if (isset($_SESSION['wroc'])) {
+        unset($_SESSION["wroc"]);
+		header('Location: terminarz.php');
 		exit();
-	}*/
+	}
     
     if (isset($_POST['zakoncz'])) {
         $i = 1;
         $wynik = 0;
+        $podWynik = array("plus" => 0, "minus" => 0);
+        $ile = array("plus" => 0, "minus" => 0, "wszystkie" => 0);
         // ANGIELSKI
         while (isset($_SESSION['odp'][$i])) {
-            echo $i.". ".$_SESSION['odp'][$i]."<br />";
             $odpowiedzi = explode(",", $_SESSION['odp'][$i]);
-            if ($odpowiedzi[0] == 1) {
-                if ($odpowiedzi[1] == $_POST["$i"])
-                    echo "good";
+            
+            if ($odpowiedzi[0] == 0) { // zerowanie typu 2
+                $plus = $ile["plus"] > 0 ? $podWynik["plus"] / $ile["plus"] : 0;
+                $minus = $ile["minus"] > 0 ? $podWynik["minus"] / $ile["minus"] : 0;
+                $wynik += $plus - $minus > 0 ? $plus - $minus : 0;
+                $podWynik["plus"] = 0;
+                $podWynik["minus"] = 0;
+                $ile["plus"] = 0;
+                $ile["minus"] = 0;
+                $ile["wszystkie"]++;
+            } else if ($odpowiedzi[0] == 1) { // typ 1
+                if ($odpowiedzi[1] == $_POST["$i"]) {
+                    $wynik++;
+                }
+                $ile["wszystkie"]++;
+            } else if ($odpowiedzi[0] == 2) { // typ 2
+                if (isset($_POST["$odpowiedzi[1]"])) {
+                    $gdzie = "minus";
+                    if ($odpowiedzi[2] == "1") {
+                        $gdzie = "plus";
+                    }
+                    $podWynik["$gdzie"]++;
+                    $ile["$gdzie"]++;
+                } else {
+                    $gdzie = "minus";
+                    if ($odpowiedzi[2] == "1") {
+                        $gdzie = "plus";
+                    }
+                    $ile["$gdzie"]++;
+                }
             }
+            unset($_SESSION['odp'][$i]);
             $i++;
+        }
+
+        if ($ile["wszystkie"] > 0) {
+            $wynik = $wynik / $ile["wszystkie"] * 100;
+            
+            require_once "dbconnect.php";
+            $conn = new mysqli($host, $user, $pass, $db);
+            $dane = explode(',', $_SESSION['zalogowany'], 3);
+            $paczkazad_id = $_SESSION['odp'][0];
+            $conn->query("INSERT INTO wyniki VALUES(NULL, '$dane[1]', '$paczkazad_id', '$wynik')");
+            $conn->close();
+            $_SESSION['pokazWynik'] = '';
         }
     }
 ?>
@@ -73,7 +115,22 @@
                         
 <?php
 
-    if (isset($_POST['testId'])) {
+    if (isset($_SESSION['pokazWynik'])) {
+        $dane = explode(',', $_SESSION['zalogowany'], 3);
+        $dane = $dane[1];
+        $conn = new mysqli($host, $user, $pass, $db);
+        $result = $conn->query("SELECT wynik FROM wyniki WHERE uczen_id='$dane'");
+        $srednia = 0;
+        while ($row = $result->fetch_row()) {
+            $srednia += $row[0];
+        }
+        $srednia /= $result->num_rows;
+        
+        echo "<br /><h3>Twój wynik: ".$wynik."%</h3><h4>Średnia twoich ocen: ".$srednia."%</h4><br /><a href='terminarz.php' class='text-warning'>Powrót do terminarza</a>";
+        unset($_SESSION['pokazWynik']);
+        $conn->close();
+        $_SESSION["wroc"] = '';
+    } else if (isset($_POST['testId'])) {
         $testId = $_POST['testId'];
         echo "<h3>Przedmiot: ".$_POST['nazwaPrzedmiotu']."</h3><br /><form method='post'>";
         
@@ -81,18 +138,25 @@
         $conn = new mysqli($host, $user, $pass, $db);
         $result = $conn->query("SELECT zadania_id FROM paczkap WHERE paczkazad_id='$testId'");
         $i = 0;
-                $_SESSION['odp'] = array("byWyrownacIndeksyZPost");
+        $_SESSION['odp'] = array($_POST['testId']);
         while ($row = $result->fetch_row()) {
             $zad = $conn->query("SELECT * FROM zadania WHERE id='$row[0]'")->fetch_assoc();
             
-            if ($zad['przedmiot_id'] == 12) {
+            if ($zad['przedmiot_id'] == 12 || 'innyPrzedmiot' == 'innyPrzedmiot') {
                 if ($zad['typ'] == 1) {
                     $zdanie = explode("#", $zad['tresc'], 2);
-                    echo "<b>".++$i.". Uzupełnij lukę:</b><br /> ".$zdanie[0]."<input type='text' size='10' name='".$i."' style='text-align: center;'>".$zdanie[1]."<br /><br />";
+                    echo "<b>".++$i.". Uzupełnij lukę:</b><br /> ".$zdanie[0];
+                    
+                    if ($zad['przedmiot_id'] == 12) {
+                        echo "<input type='text' size='10' name='".$i."' style='text-align: center;'>".$zdanie[1]."<br /><br />";
+                    } else if ($zad['przedmiot_id'] == 1) {
+                        echo "<br /><input type='text' size='10' name='".$i."' style='text-align: center;'><br /><br />";
+                    }
                     $tmp = "1,".$zad['klucz'];
                     array_push($_SESSION['odp'], $tmp);
                 } else if ($zad['typ'] == 2) {
                     echo "<b>".++$i.". ".$zad['tresc']."</b><br />";
+                    
                     $id = $zad['id'];
                     $odp = $conn->query("SELECT * FROM zadaniaabc WHERE zadania_id='$id'");
                     while ($odpRow = $odp->fetch_assoc()) {
@@ -106,6 +170,9 @@
             }
         }
         echo "<input type='submit' value='Zakończ test!' name='zakoncz' class='submitButton'></form>";
+        $conn->close();
+    } else {
+        $_SESSION["wroc"] = '';
     }
 
 ?>
