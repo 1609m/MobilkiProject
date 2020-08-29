@@ -122,15 +122,16 @@
 					?>
 					<br>
                     <h3>Testy do wykonania</h3>
-                    <form role="form" action="test.php" method="post" id="post1">
                         <?php
                                 require "dbconnect.php";
+                                $data = new DateTime();
+                                //echo $data->format('Y-m-d');
                                 $conn = new mysqli($host, $user, $pass, $db);
                                 $dane = explode(",", $_SESSION['zalogowany']);
                                 $resultKlasa = $conn->query("SELECT * FROM uczniowie WHERE id = '$dane[1]'");
                                 $rowKlasa = $resultKlasa->fetch_assoc();
                                 $klasaId = $rowKlasa['klasa_id'];
-                                $result = $conn->query("SELECT * FROM paczkazad WHERE klasa_id = $klasaId");
+                                $result = $conn->query("SELECT * FROM paczkazad WHERE klasa_id = $klasaId AND przedmiot_id = 1 ORDER BY termin");
                                 $i = 1;
                                 while ($row = $result->fetch_assoc()) {
                                     $paczkaId = $row['id'];
@@ -138,64 +139,16 @@
                                     $resultIlosc = $conn->query("SELECT COUNT(id) FROM paczkap WHERE paczkazad_id = $paczkaId");
                                     $rowIlosc = ($resultIlosc->fetch_row())[0];
                                     echo "<br>Test ".$i.". <br>Data wygaśnięcia testu: ".$termin."<br>Ilość zadań: ".$rowIlosc."<br>";
-                                    echo "<input type='submit' value='Rozwiąż' class='submitButton'><br>";
+                                    echo "<form role='form' action='test.php' method='post'>";
+                                    echo "<input type='hidden' value='Matematyka' name='nazwaPrzedmiotu'>";
+                                    echo "<input type='hidden' value='$paczkaId' name='testId'>";
+                                    echo "<input type='hidden' value='Mat' name='Mat'>";
+                                    echo "<input type='submit' value='Rozwiąż' class='submitButton'><br></form>";
                                     $i++;
-                                    // $zad = $conn->query("SELECT zadania_id FROM paczkap WHERE paczkazad_id=$row[0] LIMIT 1");
-                                    // $zad = $zad->fetch_row();
-                                    // $przedmiotId = $conn->query("SELECT przedmiot_id FROM zadania WHERE id=$zad[0]");
-                                    // $przedmiotId = ($przedmiotId->fetch_row())[0];
-                                    // $przedmiot = $conn->query("SELECT * FROM przedmioty WHERE id=$przedmiotId");
-                                    // $przedmiot = $przedmiot->fetch_row();
-                                    
-                                    // $resultZad = $conn->query("SELECT COUNT(id) FROM paczkap WHERE paczkazad_id=$row[0]");
-                                    
-                                    // $moje = 0;;
-                                    // $dane = explode(',', $_SESSION['zalogowany'], 3);
-                                    // if ($dane[0] == "n") {
-                                    //     $moje = $conn->query("SELECT COUNT(id) FROM zajecia WHERE nauczyciel_id='$dane[1]' AND przedmiot_id='$przedmiot[0]'");
-                                    //     $moje = ($moje->fetch_row())[0];
-                                    //     if ($moje > 0) {
-                                    //         echo "<b>";
-                                    //         $moje = -1;
-                                    //     }
-                                    // } else {
-                                    //     $moje = $conn->query("SELECT klasa_id FROM uczniowie WHERE id='$dane[1]'");
-                                    //     $moje = ($moje->fetch_row())[0];
-                                    //     if ($moje == $resultKl['id']) {
-                                    //         echo "<b>";
-                                    //         $moje = -1;
-                                    //     }
-                                    // }
-                                    // echo "<h5 class='text-left'>".++$i.".</h5>Klasa: ".$resultKl['nazwa']."<br />";
-
-                                    // echo "Przedmiot: ".$przedmiot[1]."<br />";
-
-                                    // echo "Ilość zadań: ".($resultZad->fetch_row())[0]."<br />";
-
-                                    // if ($moje == -1)
-                                    //     echo "</b>";
-
-                                    // if ($sideDate->format('d') >= $date->format('d') && $moje == -1) {
-                                    //     if ($dane[0] == 'u') {
-                                    //         // CZY JUZ NIE ROZWIAZAL?
-                                    //         echo    '<form method="post" action="test.php" target="_blank">
-                                    //                         <input type="hidden" value="'.$przedmiot[1].'" name="nazwaPrzedmiotu">
-                                    //                         <input type="hidden" value="'.$row[0].'" name="testId">
-                                    //                         <input type="submit" value="Rozwiąż" class="submitButton">
-                                    //                     </form>';
-                                    //     } else {// PODGLĄD DLA NAUCZYCIELA
-                                    //         echo    '<form method="post">
-                                    //                         <input type="hidden" value="'.$row[0].'" name="usun">
-                                    //                         <input type="submit" value="Usuń" class="submitButton">
-                                    //                     </form>';
-                                    //     }
-                                    // }
                                 }
                                 $conn->close();
 
                         ?>
-                    </form>
-
                 </div>
 				</div>
 				<br><br>

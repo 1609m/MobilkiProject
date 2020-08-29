@@ -130,6 +130,7 @@
 	} else if (isset($_POST['sprawdz'])) {
 		if (isset($_POST['klasaPaczka'])) {
 				$klasa = $_POST['klasaPaczka'];
+				$data = $_POST['data'];
 				require_once "dbconnect.php";
 				$conn = new mysqli($host, $user, $pass, $db);	
 				$result = $conn->query("SELECT * FROM zadania WHERE przedmiot_id = 1 AND typ = 1");
@@ -154,7 +155,7 @@
 				}
 
 				if (!isset($_SESSION['er_paczka'])) {
-					$conn->query("INSERT INTO paczkazad VALUES(NULL,'$klasa','2020-08-30')");
+					$conn->query("INSERT INTO paczkazad VALUES(NULL,'$klasa','1','$data')");
 					$result = $conn->query("SELECT * FROM paczkazad ORDER BY id DESC");
 					while ($row = $result->fetch_assoc()) {
 						$paczkaId = $row['id'];
@@ -506,6 +507,8 @@
 								</select>
 							</label> 
 							<input type='hidden' name='sprawdz'>
+							<br>
+							Wybierz termin wygaśnięcia testu <input type="date" name="data">
 							<br>
 							<h4>Zaznacz zadania które chcesz dołączyć do paczki</h4>
 							<br>
