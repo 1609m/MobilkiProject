@@ -139,11 +139,11 @@
                                     $resultIlosc = $conn->query("SELECT COUNT(id) FROM paczkap WHERE paczkazad_id = $paczkaId");
                                     $rowIlosc = ($resultIlosc->fetch_row())[0];
                                     echo "<br>Test ".$i.". <br>Data wygaśnięcia testu: ".$termin."<br>Ilość zadań: ".$rowIlosc."<br>";
-                                    echo "<form role='form' action='test.php' method='post'>";
+                                    echo "<form role='form' action='test.php' method='post' target='_blank'>";
                                     echo "<input type='hidden' value='Matematyka' name='nazwaPrzedmiotu'>";
                                     echo "<input type='hidden' value='$paczkaId' name='testId'>";
                                     echo "<input type='hidden' value='Mat' name='Mat'>";
-                                    echo "<input type='submit' value='Rozwiąż' class='submitButton'><br></form>";
+                                    echo "<input type='submit' value='Rozwiąż' class='submitButton'><br></form><br>";
                                     $i++;
                                 }
                                 $conn->close();

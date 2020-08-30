@@ -5,19 +5,6 @@
 		header('Location: logowanie.php');
 		exit();
     }
-    if (isset($_SESSION['wroc'])) {
-        unset($_SESSION["wroc"]);
-        if (isset($_POST['Mat'])) {
-            header('Location: zadanieMatU.php');
-        } else if (isset($_POST['Ang'])) {
-            header('Location: zadanieAngU.php');
-        } else {
-            header('Location: terminarz.php');
-        }	
-        unset($_POST['Mat']);
-        unset($_POST['Ang']);
-		exit();
-	}
     
     if (isset($_POST['zakoncz'])) {
         $i = 1;
@@ -141,6 +128,8 @@
             echo "<br /><h3>Twój wynik: ".$wynik."%</h3><h4>Średnia twoich ocen: ".$srednia."%</h4><br /><a href='terminarz.php' class='text-warning'>Powrót do terminarza</a>";
         }
         unset($_SESSION['pokazWynik']);
+        unset($_POST['Mat']);
+        unset($_POST['Ang']);
         $conn->close();
         $_SESSION["wroc"] = '';
     } else if (isset($_POST['testId'])) {
