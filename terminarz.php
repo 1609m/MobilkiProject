@@ -183,7 +183,7 @@
             if ($moje == -1)
                 echo "</b>";
 
-            if ($sideDate->format('d') >= $date->format('d') && $moje == -1) {
+            if (($sideDate->format('d') >= $date->format('d') || $sideDate->format('m') >= $date->format('m')) && $moje == -1) {
                 if ($dane[0] == 'u') {
                     // CZY JUZ NIE ROZWIAZAL?
                     echo    '<form method="post" action="test.php" target="_blank">
