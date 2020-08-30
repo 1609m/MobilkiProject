@@ -115,13 +115,45 @@
 						$row = $result->fetch_assoc();
 						$klasaId = $row['klasa_id'];
 						$resultOgloszenie = $conn->query("SELECT * FROM ogloszeniazad WHERE przedmiot_id = '12' AND klasa_id = $klasaId ORDER BY id DESC");
-						while ($rowOgloszenie = $resultOgloszenie->fetch_assoc()) {
-							echo "<br>".str_replace("\n", "<br>",$rowOgloszenie['wiadomosc'])."<br><hr style='height: 5px; background: #373a3d; border: 0px;'>" ;
+						if ($resultOgloszenie->num_rows>0) {
+							while ($rowOgloszenie = $resultOgloszenie->fetch_assoc()) {
+								echo "<br>".str_replace("\n", "<br>",$rowOgloszenie['wiadomosc'])."<br><hr style='height: 5px; background: #373a3d; border: 0px;'>" ;
+							}
+						} else {
+							echo "<br><hr style='height: 5px; background: #373a3d; border: 0px;'>" ;
 						}
+
 						$conn->close();
 					?>
 					<br>
 					<h3>Testy do wykonania</h3>
+					<?php
+                                require "dbconnect.php";
+                                $data = new DateTime();
+                                //echo $data->format('Y-m-d');
+                                $conn = new mysqli($host, $user, $pass, $db);
+                                $dane = explode(",", $_SESSION['zalogowany']);
+                                $resultKlasa = $conn->query("SELECT * FROM uczniowie WHERE id = '$dane[1]'");
+                                $rowKlasa = $resultKlasa->fetch_assoc();
+                                $klasaId = $rowKlasa['klasa_id'];
+                                $result = $conn->query("SELECT * FROM paczkazad WHERE klasa_id = $klasaId AND przedmiot_id = 12 ORDER BY termin");
+                                $i = 1;
+                                while ($row = $result->fetch_assoc()) {
+                                    $paczkaId = $row['id'];
+                                    $termin = $row['termin'];
+                                    $resultIlosc = $conn->query("SELECT COUNT(id) FROM paczkap WHERE paczkazad_id = $paczkaId");
+                                    $rowIlosc = ($resultIlosc->fetch_row())[0];
+                                    echo "<br>Test ".$i.". <br>Data wygaśnięcia testu: ".$termin."<br>Ilość zadań: ".$rowIlosc."<br>";
+                                    echo "<form role='form' action='test.php' method='post'>";
+                                    echo "<input type='hidden' value='JĘZYK ANGIELSKI' name='nazwaPrzedmiotu'>";
+									echo "<input type='hidden' value='$paczkaId' name='testId'>";
+									echo "<input type='hidden' value='Ang' name='Ang'>";
+                                    echo "<input type='submit' value='Rozwiąż' class='submitButton'><br></form>";
+                                    $i++;
+                                }
+                                $conn->close();
+
+                        ?>
 				</div>
 				<br><br>
 				

@@ -7,6 +7,14 @@
     }
     if (isset($_SESSION['wroc'])) {
         unset($_SESSION["wroc"]);
+        if (isset($_POST['Mat'])) {
+            header('Location: zadanieMatU.php');
+        } else if (isset($_POST['Ang'])) {
+            header('Location: zadanieAngU.php');
+        } else {
+            header('Location: terminarz.php');
+        }	
+        unset($_POST['Mat']);
 		header('Location: terminarz.php');
 		exit();
 	}
@@ -125,15 +133,19 @@
             $srednia += $row[0];
         }
         $srednia /= $result->num_rows;
-        
-        echo "<br /><h3>Twój wynik: ".$wynik."%</h3><h4>Średnia twoich ocen: ".$srednia."%</h4><br /><a href='terminarz.php' class='text-warning'>Powrót do terminarza</a>";
+        if (isset($_POST['Mat'])) {
+            echo "<br /><h3>Twój wynik: ".$wynik."%</h3><h4>Średnia twoich ocen: ".$srednia."%</h4><br /><a href='zadanieMatU.php' class='text-warning'>Powrót do Matematyki</a>";
+        } else if (isset($_POST['Ang'])) {
+            echo "<br /><h3>Twój wynik: ".$wynik."%</h3><h4>Średnia twoich ocen: ".$srednia."%</h4><br /><a href='zadanieAngU.php' class='text-warning'>Powrót do J. Angielskiego</a>";
+        } else {
+            echo "<br /><h3>Twój wynik: ".$wynik."%</h3><h4>Średnia twoich ocen: ".$srednia."%</h4><br /><a href='terminarz.php' class='text-warning'>Powrót do terminarza</a>";
+        }
         unset($_SESSION['pokazWynik']);
         $conn->close();
         $_SESSION["wroc"] = '';
     } else if (isset($_POST['testId'])) {
         $testId = $_POST['testId'];
         echo "<h3>Przedmiot: ".$_POST['nazwaPrzedmiotu']."</h3><br /><form method='post'>";
-        
         require_once "dbconnect.php";
         $conn = new mysqli($host, $user, $pass, $db);
         $result = $conn->query("SELECT zadania_id FROM paczkap WHERE paczkazad_id='$testId'");
@@ -168,6 +180,13 @@
                     echo "<br />";
                 }
             }
+        }
+        if (isset($_POST['Ang'])) {
+            $testAng = $_POST['Ang'];
+            echo "<input type='hidden' value='$testAng' name='Ang'>";
+        } else if (isset($_POST['Mat'])) {
+            $testMat = $_POST['Mat'];
+            echo "<input type='hidden' value='$testMat' name='Mat'>";
         }
         echo "<input type='submit' value='Zakończ test!' name='zakoncz' class='submitButton'></form>";
         $conn->close();
