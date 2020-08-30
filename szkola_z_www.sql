@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Czas generowania: 24 Sie 2020, 19:48
+-- Czas generowania: 30 Sie 2020, 12:58
 -- Wersja serwera: 10.4.13-MariaDB
--- Wersja PHP: 7.4.8
+-- Wersja PHP: 7.4.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -97,7 +97,7 @@ CREATE TABLE `ogloszeniazad` (
 --
 
 INSERT INTO `ogloszeniazad` (`id`, `nauczyciel_id`, `klasa_id`, `przedmiot_id`, `wiadomosc`) VALUES
-(61, 4, 1, 12, 'qwerty');
+(67, 4, 1, 1, 'Witam, do juta mają państwo do zrobienia 3 Test\r\nPozdrawam');
 
 -- --------------------------------------------------------
 
@@ -128,7 +128,19 @@ INSERT INTO `paczkap` (`id`, `paczkazad_id`, `zadania_id`) VALUES
 (37, 18, 3),
 (38, 18, 34),
 (39, 18, 35),
-(41, 18, 37);
+(41, 18, 37),
+(42, 19, 44),
+(43, 19, 42),
+(46, 21, 44),
+(47, 21, 41),
+(48, 22, 3),
+(49, 23, 46),
+(50, 23, 42),
+(51, 24, 44),
+(52, 24, 46),
+(53, 24, 41),
+(54, 24, 42),
+(55, 24, 47);
 
 -- --------------------------------------------------------
 
@@ -139,6 +151,7 @@ INSERT INTO `paczkap` (`id`, `paczkazad_id`, `zadania_id`) VALUES
 CREATE TABLE `paczkazad` (
   `id` int(11) NOT NULL,
   `klasa_id` int(11) NOT NULL,
+  `przedmiot_id` int(11) NOT NULL,
   `termin` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -146,10 +159,15 @@ CREATE TABLE `paczkazad` (
 -- Zrzut danych tabeli `paczkazad`
 --
 
-INSERT INTO `paczkazad` (`id`, `klasa_id`, `termin`) VALUES
-(9, 1, '2020-08-21'),
-(10, 1, '2020-08-22'),
-(18, 3, '2020-08-30');
+INSERT INTO `paczkazad` (`id`, `klasa_id`, `przedmiot_id`, `termin`) VALUES
+(9, 1, 12, '2020-08-21'),
+(10, 1, 12, '2020-08-22'),
+(18, 3, 12, '2020-08-30'),
+(19, 1, 1, '2020-08-30'),
+(21, 1, 1, '2020-08-31'),
+(22, 1, 12, '2020-09-02'),
+(23, 1, 1, '2020-08-28'),
+(24, 1, 1, '2020-09-01');
 
 -- --------------------------------------------------------
 
@@ -286,6 +304,16 @@ CREATE TABLE `wyniki` (
   `wynik` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_polish_ci;
 
+--
+-- Zrzut danych tabeli `wyniki`
+--
+
+INSERT INTO `wyniki` (`id`, `uczen_id`, `paczkazad_id`, `wynik`) VALUES
+(1, 3, 19, 100),
+(3, 3, 24, 40),
+(4, 3, 22, 100),
+(5, 3, 23, 50);
+
 -- --------------------------------------------------------
 
 --
@@ -314,7 +342,12 @@ INSERT INTO `zadania` (`id`, `przedmiot_id`, `typ`, `tresc`, `klucz`) VALUES
 (12, 12, 1, 'We live # Poznan.', 'in'),
 (34, 12, 2, 'I * you.', ''),
 (35, 12, 2, 'What is color of the sun?', ''),
-(37, 12, 2, 'She * late at school yesterday.', '');
+(37, 12, 2, 'She * late at school yesterday.', ''),
+(41, 1, 2, 'Ile to jest  2+2x2-(2+2)x2?', ''),
+(42, 1, 2, 'Do trzech jednakowych naczyń wlano tyle wody, że w pierwszym naczyniu woda zajmowała 2/3 pojemności, w drugim 3/4 pojemności, a w trzecim 5/7 pojemności danego naczynia.', ''),
+(44, 1, 1, '2+2x2-(2+2)x2', '-2'),
+(46, 1, 1, '2x2', '4'),
+(47, 1, 2, 'Paweł ma ćwierć jabłka a Tomek ma pół jabłka ile mają łącznie jabłek?', '');
 
 -- --------------------------------------------------------
 
@@ -343,7 +376,16 @@ INSERT INTO `zadaniaabc` (`id`, `zadania_id`, `pytanie`, `TF`) VALUES
 (69, 35, 'pink', 0),
 (75, 37, 'is', 0),
 (76, 37, 'has', 0),
-(77, 37, 'was', 0);
+(77, 37, 'was', 0),
+(84, 41, '0', 0),
+(85, 41, '-2', 1),
+(86, 41, '2', 0),
+(87, 41, '4', 0),
+(88, 42, 'W naczyniu drugim było więcej wody niż w naczyniu trzecim', 1),
+(89, 42, 'W pierwszym i drugim naczyniu łącznie było tyle samo wody, co w trzecim naczyniu.', 0),
+(92, 47, '1.5', 0),
+(93, 47, '0.75', 1),
+(94, 47, '1', 0);
 
 -- --------------------------------------------------------
 
@@ -487,19 +529,19 @@ ALTER TABLE `odczytane`
 -- AUTO_INCREMENT dla tabeli `ogloszeniazad`
 --
 ALTER TABLE `ogloszeniazad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT dla tabeli `paczkap`
 --
 ALTER TABLE `paczkap`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 
 --
 -- AUTO_INCREMENT dla tabeli `paczkazad`
 --
 ALTER TABLE `paczkazad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT dla tabeli `powiadomienia`
@@ -535,19 +577,19 @@ ALTER TABLE `wykonanezadania`
 -- AUTO_INCREMENT dla tabeli `wyniki`
 --
 ALTER TABLE `wyniki`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT dla tabeli `zadania`
 --
 ALTER TABLE `zadania`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT dla tabeli `zadaniaabc`
 --
 ALTER TABLE `zadaniaabc`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT dla tabeli `zajecia`

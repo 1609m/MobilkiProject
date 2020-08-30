@@ -15,7 +15,7 @@
             header('Location: terminarz.php');
         }	
         unset($_POST['Mat']);
-		header('Location: terminarz.php');
+        unset($_POST['Ang']);
 		exit();
 	}
     
